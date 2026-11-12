@@ -1,0 +1,38 @@
+[package]
+name = "chiri"
+description = "lightweight software package generator"
+version = "0.0.1"
+edition = "2024"
+authors = ["Andrew Pennebaker <n4jm4@pm.me>"]
+license = "0BSD"
+repository = "https://github.com/mcandre/chiri"
+exclude = [
+    "*.mk",
+    ".editorconfig",
+    ".github",
+    ".rubberstamp",
+    ".tool-versions",
+    "examples",
+    "makefile",
+    "vendor",
+]
+
+[dependencies]
+die = "0.2.0"
+getopts = "0.2.24"
+glob = "0.3.3"
+regex = "1.12.3"
+serde = { version = "1.0.228", features = ["derive"] }
+toml = "0.9.8"
+typetag = "0.2.23"
+walkdir = "2.5.0"
+
+[lib]
+name = "chiri"
+
+[[bin]]
+name = "chiri"
+path = "src/chiri.rs"
+
+[profile.release]
+strip = "symbols"

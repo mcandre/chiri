@@ -1,0 +1,21 @@
+---
+name: "Test-Futureproof-Language"
+on: # yamllint disable-line rule:truthy
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: "read"
+  issues: "write"
+  pull-requests: "write"
+jobs:
+  Test-Futureproof-Language:
+    runs-on: "ubuntu-24.04"
+    steps:
+    - uses: "actions/checkout@v7"
+    - name: "provision buildx"
+      uses: "docker/setup-buildx-action@v4"
+    - uses: "dtolnay/rust-toolchain@stable"
+      with:
+        toolchain: "stable"
+    - run: "make test"
