@@ -9,10 +9,21 @@ impl Petal {
             .clone()
             .unwrap()
             .join("tarball");
-        fs::create_dir_all(tarball_artifacts_root)
+        fs::create_dir_all(&tarball_artifacts_root)
             .map_err(|e| ChiriError::IOError(e.to_string()))?;
 
+
+
+
+        let name = "test-app";
+        let version = "test-version";
+
         let mut basename = format!("{name}-{version}");
+
+
+
+
+        let revision = "test-revision";
 
         if !revision.is_empty() {
             basename.push_str("-");
