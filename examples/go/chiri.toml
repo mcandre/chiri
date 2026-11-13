@@ -77,7 +77,6 @@ petal.chipset = "freebsd:*:aarch64"
 # petal.license = "FreeBSD,GPL,MIT"
 dest."usr/local/bin" = "bin/freebsd/arm64"
 
-
 # [[pkg]]
 # kind = "gentoo"
 # petal.chipset = "amd64"
