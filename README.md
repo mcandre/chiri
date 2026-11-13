@@ -6,9 +6,9 @@
 
 花ちりて木間の寺と成にけり
 
-—Yosa Buson
-
 _Flowers scattered, a wreathed temple arose._
+
+—Yosa Buson
 
 # ABOUT
 
