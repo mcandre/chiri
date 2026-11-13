@@ -8,6 +8,14 @@ use crate::{Chiri, Pkg, add_dir_with_root, add_file_with_root, error::ChiriError
 
 impl Petal {
     /// emit_deb generates Debian family packages.
+    ///
+    /// Requirements:
+    ///
+    /// * pkg.petal.chipset present, nonblank
+    /// * pkg.petal.copyright present, nonblank
+    /// * pkg.petal.license present, nonblank
+    /// * pkg.petal.maintainer present, nonblank
+    /// * pkg.petal.description present, nonblank
     pub fn emit_deb(self: &Petal, pkg: &Pkg, chiri: &Chiri) -> Result<(), ChiriError> {
         let blank = String::new();
         let optional = String::from("optional");
@@ -61,6 +69,7 @@ impl Petal {
         //
         // Generate control.tar.zst
         //
+
         let control_artifact_pth = t_pth.join("control.tar.zst");
         let mut control_archive = libarchive2::WriteArchive::new()
             .format(libarchive2::ArchiveFormat::TarGnu)
@@ -119,6 +128,7 @@ impl Petal {
         //
         // Generate data.tar.zst
         //
+
         let data_artifact_pth = t_pth.join("data.tar.zst");
         let mut data_archive = libarchive2::WriteArchive::new()
             .format(libarchive2::ArchiveFormat::TarGnu)
@@ -157,12 +167,16 @@ impl Petal {
         }
 
         basename.push_str(".deb");
+
+        //
+        // Generate DEB
+        //
+
         let deb_artifacts_root = chiri.artifacts.clone().unwrap().join("deb");
         fs::create_dir_all(&deb_artifacts_root).map_err(|e| ChiriError::IOError(e.to_string()))?;
         let artifact_filename = deb_artifacts_root.join(basename);
         let mut deb_archive = libarchive2::WriteArchive::new()
             .format(libarchive2::ArchiveFormat::Ar)
-            // .compression(libarchive2::CompressionFormat::Zstd)
             .open_file(artifact_filename)
             .map_err(|e| ChiriError::IOError(e.to_string()))?;
 

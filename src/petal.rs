@@ -15,14 +15,23 @@ pub enum Petal {
 
     /// Deb builds Debian family packages.
     Deb,
+
+    /// Rpm builds RHEL family packages.
+    Rpm,
 }
 
 impl Petal {
     /// bloom generates an installer.
+    ///
+    /// Requirements:
+    ///
+    /// * pkg.petal.name present, nonblank
+    /// * pkg.petal.version present, nonblank
     pub fn bloom(self: &Petal, pkg: &Pkg, chiri: &Chiri) -> Result<(), ChiriError> {
         match self {
             Petal::Tarball => self.emit_tarball(pkg, chiri),
             Petal::Deb => self.emit_deb(pkg, chiri),
+            Petal::Rpm => self.emit_rpm(pkg, chiri),
         }
     }
 }

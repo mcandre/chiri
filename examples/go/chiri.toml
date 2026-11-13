@@ -16,7 +16,7 @@ license = "0BSD"
 url = "https://mars.test/"
 
 # [[pkg]]
-# kind = "Alpine"
+# kind = "alpine"
 # petal.chipset = "x86_64"
 # # petal.dependencies = "bash"
 # # petal.apk_makedepends = "gcc"
@@ -24,7 +24,7 @@ url = "https://mars.test/"
 # dest."usr/bin" = "bin/linux/amd64"
 
 # [[pkg]]
-# kind = "Alpine"
+# kind = "alpine"
 # petal.chipset = "aarch64"
 # # petal.dependencies = "bash"
 # # petal.apk_makedepends = "gcc"
@@ -32,14 +32,14 @@ url = "https://mars.test/"
 # dest."usr/bin" = "bin/linux/arm64"
 
 # [[pkg]]
-# kind = "AppImage"
+# kind = "app_image"
 # petal.chipset = "x86_64"
 # petal.appimage_executable = "raygun"
 # dest."usr/bin" = "bin/linux/amd64"
 # dest."raygun.png" = "raygun.png"
 
 # [[pkg]]
-# kind = "AppImage"
+# kind = "app_image"
 # petal.chipset = "aarch64"
 # petal.appimage_executable = "raygun"
 # dest."usr/bin" = "bin/linux/arm64"
@@ -60,7 +60,7 @@ petal.chipset = "arm64"
 dest."usr/bin" = "bin/linux/arm64"
 
 # [[pkg]]
-# kind = "FreeBSD"
+# kind = "freebsd"
 # petal.origin = "local/raygun"
 # petal.chipset = "freebsd:*:amd64"
 # # petal.dependencies = "bash: { origin: \"shells/bash\" }"
@@ -68,7 +68,7 @@ dest."usr/bin" = "bin/linux/arm64"
 # dest."usr/local/bin" = "bin/freebsd/amd64"
 
 # [[pkg]]
-# kind = "FreeBSD"
+# kind = "freebsd"
 # petal.origin = "local/raygun"
 # petal.chipset = "freebsd:*:arm64"
 # # petal.dependencies = "bash: { origin: \"shells/bash\" }"
@@ -76,19 +76,19 @@ dest."usr/bin" = "bin/linux/arm64"
 # dest."usr/local/bin" = "bin/freebsd/arm64"
 
 # [[pkg]]
-# kind = "Gentoo"
+# kind = "gentoo"
 # petal.chipset = "amd64"
 # # petal.dependencies = "app-shells/bash"
 # dest."usr/bin" = "bin/linux/amd64"
 
 # [[pkg]]
-# kind = "Gentoo"
+# kind = "gentoo"
 # petal.chipset = "arm64"
 # # petal.dependencies = "app-shells/bash"
 # dest."usr/bin" = "bin/linux/arm64"
 
 # [[pkg]]
-# kind = "MacOS"
+# kind = "macos"
 # petal.chipset = "x86_64"
 # # petal.dependencies = "bash"
 # #
@@ -105,7 +105,7 @@ dest."usr/bin" = "bin/linux/arm64"
 # dest."usr/local/bin" = "bin/darwin/amd64"
 
 # [[pkg]]
-# kind = "MacOS"
+# kind = "macos"
 # petal.chipset = "arm64"
 # # petal.dependencies = "bash"
 # #
@@ -122,7 +122,7 @@ dest."usr/bin" = "bin/linux/arm64"
 # dest."usr/local/bin" = "bin/darwin/arm64"
 
 # [[pkg]]
-# kind = "NetBSD"
+# kind = "netbsd"
 # petal.chipset = "x86_64"
 # # petal.dependencies = "bash"
 # # petal.pkg_opsys = "NetBSD"
@@ -133,7 +133,7 @@ dest."usr/bin" = "bin/linux/arm64"
 # dest."bin" = "bin/netbsd/amd64"
 
 # [[pkg]]
-# kind = "NetBSD"
+# kind = "netbsd"
 # petal.chipset = "aarch64"
 # # petal.dependencies = "bash"
 # # petal.pkg_opsys = "NetBSD"
@@ -144,7 +144,7 @@ dest."usr/bin" = "bin/linux/arm64"
 # dest."bin" = "bin/netbsd/arm64"
 
 # [[pkg]]
-# kind = "OpenBSD"
+# kind = "openbsd"
 # petal.chipset = "amd64"
 # petal.pkgpath = "misc/raygun"
 # # petal.dependencies = """
@@ -154,7 +154,7 @@ dest."usr/bin" = "bin/linux/arm64"
 # dest."bin" = "bin/openbsd/amd64"
 
 # [[pkg]]
-# kind = "OpenBSD"
+# kind = "openbsd"
 # petal.chipset = "arm64"
 # petal.pkgpath = "misc/raygun"
 # # petal.dependencies = """
@@ -163,19 +163,17 @@ dest."usr/bin" = "bin/linux/arm64"
 # # petal.pkg_prefix = "/usr/local"
 # dest."bin" = "bin/openbsd/arm64"
 
-# [[pkg]]
-# kind = "Rpm"
-# petal.chipset = "x86_64"
-# # petal.dependencies = "bash"
-# # petal.pkg_licenselogic = "single"
-# dest."usr/bin" = "bin/linux/amd64"
+[[pkg]]
+kind = "rpm"
+petal.chipset = "x86_64"
+# petal.dependencies = "bash@5,curl@8"
+dest."usr/bin/raygun" = "bin/linux/amd64/raygun"
 
-# [[pkg]]
-# kind = "Rpm"
-# petal.chipset = "aarch64"
-# # petal.dependencies = "bash"
-# # petal.pkg_licenselogic = "single"
-# dest."usr/bin" = "bin/linux/arm64"
+[[pkg]]
+kind = "rpm"
+petal.chipset = "aarch64"
+# petal.dependencies = "bash@5,curl@8"
+dest."usr/bin/raygun" = "bin/linux/arm64/raygun"
 
 [[pkg]]
 kind = "tarball"
@@ -188,7 +186,7 @@ petal.chipset = "arm64"
 dest."opt/raygun/bin" = "bin/linux/arm64"
 
 # [[pkg]]
-# kind = "Windows"
+# kind = "windows"
 # petal.chipset = "x64"
 # petal.msi_upgrade_code = "69F159AD-CE9C-4EE8-A25D-BB4E8A226D73"
 # # petal.msi_lcid = "1033"
@@ -196,7 +194,7 @@ dest."opt/raygun/bin" = "bin/linux/arm64"
 # dest."bin" = "bin/windows/amd64"
 
 # [[pkg]]
-# kind = "Windows"
+# kind = "windows"
 # petal.chipset = "arm64"
 # petal.msi_upgrade_code = "69F159AD-CE9C-4EE8-A25D-BB4E8A226D73"
 # # petal.msi_lcid = "1033"
