@@ -1,4 +1,7 @@
+// Preserve metadata
+#[cfg(unix)]
 use std::os::unix::fs::MetadataExt;
+
 use libarchive2;
 
 use std::fs;
@@ -10,6 +13,9 @@ use crate::{ error::ChiriError, petal::Petal, Chiri, Pkg};
 impl Petal {
     /// emit_tarball generates generic UNIX tarballs.
     pub fn emit_tarball(self: &Petal, pkg: &Pkg, chiri: &Chiri) -> Result<(), ChiriError> {
+        #[cfg(not(unix))]
+        eprintln!("warning: metadata preservation requires a unix environment");
+
         let blank = String::new();
         let petal = pkg.petal.clone().unwrap_or_default();
         let name = petal.get("name").unwrap_or(&blank);
