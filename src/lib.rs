@@ -1,5 +1,4 @@
 //! chiri provides predicates for generating software packages.
-extern crate glob;
 extern crate toml;
 extern crate walkdir;
 
@@ -9,7 +8,6 @@ use std::collections::BTreeMap;
 use std::fmt;
 use std::fs;
 use std::path;
-use std::sync;
 
 pub mod error;
 pub mod petal;
@@ -26,17 +24,6 @@ pub static DEFAULT_CACHE: &str = ".chiri";
 pub fn artifacts_dir() -> path::PathBuf {
     path::Path::new(DEFAULT_CACHE).join("artifacts")
 }
-
-/// DATA denotes the directory root for source media files, relative to petal cache.
-pub static DATA: &str = "source-media";
-
-/// DEFAULT_EXCLUDES collects default skip patterns.
-pub static DEFAULT_EXCLUDES: sync::LazyLock<Vec<String>> = sync::LazyLock::new(|| {
-    [".DS_Store", "Thumbs.db"]
-        .iter()
-        .map(|e| e.to_string())
-        .collect()
-});
 
 /// Pkg builds software packages.
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
@@ -61,6 +48,21 @@ impl fmt::Display for Pkg {
 }
 
 impl Pkg {
+    /// validate performs a basic data integrity check.
+    ///
+    /// Checks:
+    ///
+    /// * dest table present, nonempty
+    pub fn validate(self) -> Result<(), error::ChiriError> {
+        let dest = self.dest.unwrap_or_default();
+
+        if dest.is_empty() {
+            return Err(error::ChiriError::IOError("dest table missing/empty".to_string()));
+        }
+
+        Ok(())
+    }
+
     /// bloom generates an installer.
     pub fn bloom(self, chiri: &Chiri) -> Result<(), error::ChiriError> {
         self.kind.bloom(&self, chiri)
@@ -74,12 +76,6 @@ pub struct Chiri {
     /// debug enables additional logs.
     pub debug: Option<bool>,
 
-    // excludes collects file path skip patterns for dest file mapping.
-    //
-    // Glob syntax
-    // https://docs.rs/glob/latest/glob/index.html
-    pub excludes: Option<Vec<String>>,
-
     /// petal supplies additional build configuration to Petals (requirements vary by distro).
     pub petal: Option<BTreeMap<String, String>>,
 
@@ -89,9 +85,8 @@ pub struct Chiri {
     /// pkg collects the packages to be built.
     pub pkg: Option<Vec<Pkg>>,
 
-    /// exclude_patterns caches glob patterns.
     #[serde(skip)]
-    excludes_patterns: Vec<glob::Pattern>,
+    /// artifacts caches the artifacts directory root.
     artifacts: Option<path::PathBuf>,
 }
 
@@ -121,8 +116,41 @@ impl Chiri {
         Ok(c)
     }
 
+    /// validates performs a basic data integrity check.
+    ///
+    /// Checks:
+    ///
+    /// * petal table present
+    /// * petal.name present, nonblank
+    /// * petal.version present, nonblank
+    pub fn validate(self: &Chiri) -> Result<(), error::ChiriError> {
+        let petal = self.petal.clone().unwrap_or_default();
+
+        if petal.is_empty() {
+            return Err(error::ChiriError::IOError("petal table missing".to_string()));
+        }
+
+        let blank = String::new();
+
+        let name = petal.get("name").unwrap_or(&blank);
+
+        if name.is_empty() {
+            return Err(error::ChiriError::IOError("petal.name blank/missing".to_string()));
+        }
+
+        let version = petal.get("version").unwrap_or(&blank);
+
+        if version.is_empty() {
+            return Err(error::ChiriError::IOError("petal.version blank/missing".to_string()));
+        }
+
+        Ok(())
+    }
+
     /// bloom generates install media.
     pub fn bloom(self: &mut Chiri) -> Result<(), error::ChiriError> {
+        self.validate()?;
+
         let pkgs = self.pkg
             .clone()
             .unwrap_or(Vec::new());
@@ -132,11 +160,24 @@ impl Chiri {
             .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
 
         for pkg in pkgs {
+            let mut petal2 = self.petal.clone().unwrap_or_default();
+            let pkg_petal = pkg.petal.clone().unwrap_or_default();
+            petal2.extend(pkg_petal);
+
+            let mut dest2 = self.dest.clone().unwrap_or_default();
+            let pkg_dest = pkg.dest.clone().unwrap_or_default();
+            dest2.extend(pkg_dest);
+
+            let mut pkg2 = pkg.clone();
+            pkg2.petal = Some(petal2);
+            pkg2.dest = Some(dest2);
+
             if let Some(true) = self.debug {
-                eprintln!("pkg: {:?}", pkg);
+                eprintln!("pkg: {:?}", pkg2);
             }
 
-            pkg.bloom(self)?;
+            pkg2.clone().validate()?;
+            pkg2.bloom(self)?;
         }
 
         eprintln!("info: packages written to {:?}", artifacts);
@@ -146,7 +187,11 @@ impl Chiri {
 
     /// clean removes artifacts.
     pub fn clean(self: &Chiri) -> Result<(), error::ChiriError> {
-        fs::remove_dir_all(DEFAULT_CACHE)
-            .map_err(|e| error::ChiriError::IOError(e.to_string()))
+        if path::Path::new(DEFAULT_CACHE).exists() {
+            fs::remove_dir_all(DEFAULT_CACHE)
+                .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+        }
+
+        Ok(())
     }
 }

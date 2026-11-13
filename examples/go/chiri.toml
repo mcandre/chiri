@@ -22,7 +22,7 @@ url = "https://mars.test/"
 
 # [[pkg]]
 # kind = "Alpine"
-# petal.os_arch = "x86_64"
+# petal.chipset = "x86_64"
 # # petal.dependencies = "bash"
 # # petal.apk_makedepends = "gcc"
 # # petal.apk_checkdepends = "diff"
@@ -30,7 +30,7 @@ url = "https://mars.test/"
 
 # [[pkg]]
 # kind = "Alpine"
-# petal.os_arch = "aarch64"
+# petal.chipset = "aarch64"
 # # petal.dependencies = "bash"
 # # petal.apk_makedepends = "gcc"
 # # petal.apk_checkdepends = "diff"
@@ -38,28 +38,28 @@ url = "https://mars.test/"
 
 # [[pkg]]
 # kind = "AppImage"
-# petal.os_arch = "x86_64"
+# petal.chipset = "x86_64"
 # petal.appimage_executable = "raygun"
 # dest."usr/bin" = "bin/linux/amd64"
 # dest."raygun.png" = "raygun.png"
 
 # [[pkg]]
 # kind = "AppImage"
-# petal.os_arch = "aarch64"
+# petal.chipset = "aarch64"
 # petal.appimage_executable = "raygun"
 # dest."usr/bin" = "bin/linux/arm64"
 # dest."raygun.png" = "raygun.png"
 
 # [[pkg]]
 # kind = "Deb"
-# petal.os_arch = "amd64"
+# petal.chipset = "amd64"
 # # petal.dependencies = "bash"
 # # petal.apt_priority = "optional"
 # dest."usr/bin" = "bin/linux/amd64"
 
 # [[pkg]]
 # kind = "Deb"
-# petal.os_arch = "arm64"
+# petal.chipset = "arm64"
 # # petal.dependencies = "bash"
 # # petal.apt_priority = "optional"
 # dest."usr/bin" = "bin/linux/arm64"
@@ -67,7 +67,7 @@ url = "https://mars.test/"
 # [[pkg]]
 # kind = "FreeBSD"
 # petal.origin = "local/raygun"
-# petal.os_arch = "freebsd:*:amd64"
+# petal.chipset = "freebsd:*:amd64"
 # # petal.dependencies = "bash: { origin: \"shells/bash\" }"
 # # petal.pkg_prefix = "/usr/local"
 # dest."usr/local/bin" = "bin/freebsd/amd64"
@@ -75,26 +75,26 @@ url = "https://mars.test/"
 # [[pkg]]
 # kind = "FreeBSD"
 # petal.origin = "local/raygun"
-# petal.os_arch = "freebsd:*:arm64"
+# petal.chipset = "freebsd:*:arm64"
 # # petal.dependencies = "bash: { origin: \"shells/bash\" }"
 # # petal.pkg_prefix = "/usr/local"
 # dest."usr/local/bin" = "bin/freebsd/arm64"
 
 # [[pkg]]
 # kind = "Gentoo"
-# petal.os_arch = "amd64"
+# petal.chipset = "amd64"
 # # petal.dependencies = "app-shells/bash"
 # dest."usr/bin" = "bin/linux/amd64"
 
 # [[pkg]]
 # kind = "Gentoo"
-# petal.os_arch = "arm64"
+# petal.chipset = "arm64"
 # # petal.dependencies = "app-shells/bash"
 # dest."usr/bin" = "bin/linux/arm64"
 
 # [[pkg]]
 # kind = "MacOS"
-# petal.os_arch = "x86_64"
+# petal.chipset = "x86_64"
 # # petal.dependencies = "bash"
 # #
 # # macOS user:staff
@@ -111,7 +111,7 @@ url = "https://mars.test/"
 
 # [[pkg]]
 # kind = "MacOS"
-# petal.os_arch = "arm64"
+# petal.chipset = "arm64"
 # # petal.dependencies = "bash"
 # #
 # # macOS user:staff
@@ -128,7 +128,7 @@ url = "https://mars.test/"
 
 # [[pkg]]
 # kind = "NetBSD"
-# petal.os_arch = "x86_64"
+# petal.chipset = "x86_64"
 # # petal.dependencies = "bash"
 # # petal.pkg_opsys = "NetBSD"
 # petal.pkg_os_version = "10.1"
@@ -139,7 +139,7 @@ url = "https://mars.test/"
 
 # [[pkg]]
 # kind = "NetBSD"
-# petal.os_arch = "aarch64"
+# petal.chipset = "aarch64"
 # # petal.dependencies = "bash"
 # # petal.pkg_opsys = "NetBSD"
 # petal.pkg_os_version = "10.1"
@@ -150,7 +150,7 @@ url = "https://mars.test/"
 
 # [[pkg]]
 # kind = "OpenBSD"
-# petal.os_arch = "amd64"
+# petal.chipset = "amd64"
 # petal.pkgpath = "misc/raygun"
 # # petal.dependencies = """
 # # shells/bash
@@ -160,7 +160,7 @@ url = "https://mars.test/"
 
 # [[pkg]]
 # kind = "OpenBSD"
-# petal.os_arch = "arm64"
+# petal.chipset = "arm64"
 # petal.pkgpath = "misc/raygun"
 # # petal.dependencies = """
 # # shells/bash
@@ -170,31 +170,31 @@ url = "https://mars.test/"
 
 # [[pkg]]
 # kind = "Rpm"
-# petal.os_arch = "x86_64"
+# petal.chipset = "x86_64"
 # # petal.dependencies = "bash"
 # # petal.pkg_licenselogic = "single"
 # dest."usr/bin" = "bin/linux/amd64"
 
 # [[pkg]]
 # kind = "Rpm"
-# petal.os_arch = "aarch64"
+# petal.chipset = "aarch64"
 # # petal.dependencies = "bash"
 # # petal.pkg_licenselogic = "single"
 # dest."usr/bin" = "bin/linux/arm64"
 
 [[pkg]]
 kind = "tarball"
-petal.os_arch = "amd64"
+petal.chipset = "amd64"
 dest."opt/raygun/bin" = "bin/linux/amd64"
 
 [[pkg]]
 kind = "tarball"
-petal.os_arch = "arm64"
+petal.chipset = "arm64"
 dest."opt/raygun/bin" = "bin/linux/arm64"
 
 # [[pkg]]
 # kind = "Windows"
-# petal.os_arch = "x64"
+# petal.chipset = "x64"
 # petal.msi_upgrade_code = "69F159AD-CE9C-4EE8-A25D-BB4E8A226D73"
 # # petal.msi_lcid = "1033"
 # # petal.msi_codepage = "1252"
@@ -202,7 +202,7 @@ dest."opt/raygun/bin" = "bin/linux/arm64"
 
 # [[pkg]]
 # kind = "Windows"
-# petal.os_arch = "arm64"
+# petal.chipset = "arm64"
 # petal.msi_upgrade_code = "69F159AD-CE9C-4EE8-A25D-BB4E8A226D73"
 # # petal.msi_lcid = "1033"
 # # petal.msi_codepage = "1252"

@@ -19,12 +19,12 @@ exclude = [
 
 [dependencies]
 die = "0.2.0"
+# flate2 = "1.1.11"
 getopts = "0.2.24"
-glob = "0.3.3"
-regex = "1.12.3"
+libarchive2 = "0.2.1"
 serde = { version = "1.0.228", features = ["derive"] }
+# tar = "0.4.46"
 toml = "0.9.8"
-typetag = "0.2.23"
 walkdir = "2.5.0"
 
 [lib]
