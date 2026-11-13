@@ -59,21 +59,24 @@ petal.chipset = "arm64"
 # petal.priority = "optional"
 dest."usr/bin" = "bin/linux/arm64"
 
-# [[pkg]]
-# kind = "freebsd"
-# petal.origin = "local/raygun"
-# petal.chipset = "freebsd:*:amd64"
-# # petal.dependencies = "bash: { origin: \"shells/bash\" }"
-# # petal.pkg_prefix = "/usr/local"
-# dest."usr/local/bin" = "bin/freebsd/amd64"
+[[pkg]]
+kind = "freebsd"
+petal.origin = "local/raygun"
+petal.chipset = "freebsd:*:amd64"
+# petal.dependencies = "bash: { origin: \"shells/bash\" }"
+# petal.prefix = "/usr/local"
+# petal.license = "FreeBSD,GPL,MIT"
+dest."usr/local/bin" = "bin/freebsd/amd64"
 
-# [[pkg]]
-# kind = "freebsd"
-# petal.origin = "local/raygun"
-# petal.chipset = "freebsd:*:arm64"
-# # petal.dependencies = "bash: { origin: \"shells/bash\" }"
-# # petal.pkg_prefix = "/usr/local"
-# dest."usr/local/bin" = "bin/freebsd/arm64"
+[[pkg]]
+kind = "freebsd"
+petal.origin = "local/raygun"
+petal.chipset = "freebsd:*:aarch64"
+# petal.dependencies = "bash: { origin: \"shells/bash\" }"
+# petal.prefix = "/usr/local"
+# petal.license = "FreeBSD,GPL,MIT"
+dest."usr/local/bin" = "bin/freebsd/arm64"
+
 
 # [[pkg]]
 # kind = "gentoo"

@@ -18,6 +18,10 @@ pub enum Petal {
 
     /// Rpm builds RHEL family packages.
     Rpm,
+
+    /// FreeBSD builds FreeBSD family packages.
+    #[serde(rename = "freebsd")]
+    FreeBSD,
 }
 
 impl Petal {
@@ -32,6 +36,7 @@ impl Petal {
             Petal::Tarball => self.emit_tarball(pkg, chiri),
             Petal::Deb => self.emit_deb(pkg, chiri),
             Petal::Rpm => self.emit_rpm(pkg, chiri),
+            Petal::FreeBSD => self.emit_freebsd(pkg, chiri),
         }
     }
 }

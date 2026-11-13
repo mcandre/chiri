@@ -354,3 +354,36 @@ pub fn i64_to_systemtime(ts: i64) -> Result<time::SystemTime, error::ChiriError>
         "invalid timestamp: {ts}"
     )))
 }
+
+/// recursive_file_size_bytes calculates byte size of a given path.
+pub fn recursive_file_size_bytes<P: AsRef<path::Path>>(pth: P) -> Result<u64, error::ChiriError> {
+    let p = pth.as_ref();
+    let metadata = p
+        .metadata()
+        .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+
+    if metadata.is_dir() {
+        let mut size_b = 0u64;
+
+        for entry in walkdir::WalkDir::new(p) {
+            let entry = entry.map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+
+            let md = entry
+                .metadata()
+                .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+
+            size_b += md.len();
+        }
+
+        return Ok(size_b);
+    }
+
+    if metadata.is_file() {
+        return Ok(metadata.len());
+    }
+
+    Err(error::ChiriError::IOError(format!(
+        "unsupported file system file type for path: {:?}",
+        p
+    )))
+}
