@@ -1,10 +1,5 @@
 # debug = true
 
-# excludes = [
-#     ".DS_Store",
-#     "Thumbs.db",
-# ]
-
 [petal]
 name = "raygun"
 identifier = "test.mars.raygun"
@@ -50,19 +45,19 @@ url = "https://mars.test/"
 # dest."usr/bin" = "bin/linux/arm64"
 # dest."raygun.png" = "raygun.png"
 
-# [[pkg]]
-# kind = "Deb"
-# petal.chipset = "amd64"
-# # petal.dependencies = "bash"
-# # petal.apt_priority = "optional"
-# dest."usr/bin" = "bin/linux/amd64"
+[[pkg]]
+kind = "deb"
+petal.chipset = "amd64"
+# petal.dependencies = "bash"
+# petal.priority = "optional"
+dest."usr/bin" = "bin/linux/amd64"
 
-# [[pkg]]
-# kind = "Deb"
-# petal.chipset = "arm64"
-# # petal.dependencies = "bash"
-# # petal.apt_priority = "optional"
-# dest."usr/bin" = "bin/linux/arm64"
+[[pkg]]
+kind = "deb"
+petal.chipset = "arm64"
+# petal.dependencies = "bash"
+# petal.priority = "optional"
+dest."usr/bin" = "bin/linux/arm64"
 
 # [[pkg]]
 # kind = "FreeBSD"

@@ -3,7 +3,7 @@ use serde::{self, Deserialize, Serialize};
 use std::collections::BTreeMap;
 use std::fmt::Debug;
 
-use crate::{ error::ChiriError, Chiri, Pkg };
+use crate::{Chiri, Pkg, error::ChiriError};
 
 /// Petal generates software packages for various package managers.
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
@@ -12,6 +12,9 @@ pub enum Petal {
     /// Tarball builds generic UNIX tape archives.
     #[default]
     Tarball,
+
+    /// Deb builds Debian family packages.
+    Deb,
 }
 
 impl Petal {
@@ -19,6 +22,7 @@ impl Petal {
     pub fn bloom(self: &Petal, pkg: &Pkg, chiri: &Chiri) -> Result<(), ChiriError> {
         match self {
             Petal::Tarball => self.emit_tarball(pkg, chiri),
+            Petal::Deb => self.emit_deb(pkg, chiri),
         }
     }
 }

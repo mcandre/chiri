@@ -1,13 +1,17 @@
 //! chiri provides predicates for generating software packages.
-extern crate toml;
-extern crate walkdir;
 
 use serde::{Deserialize, Serialize};
 
 use std::collections::BTreeMap;
 use std::fmt;
 use std::fs;
+
+// Preserve metadata
+#[cfg(unix)]
+use std::os::unix::fs::MetadataExt;
+
 use std::path;
+use std::time;
 
 pub mod error;
 pub mod petal;
@@ -41,8 +45,7 @@ pub struct Pkg {
 
 impl fmt::Display for Pkg {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let s = toml::to_string_pretty(self)
-            .map_err(|_| fmt::Error)?;
+        let s = toml::to_string_pretty(self).map_err(|_| fmt::Error)?;
         write!(f, "{s}")
     }
 }
@@ -57,7 +60,9 @@ impl Pkg {
         let dest = self.dest.unwrap_or_default();
 
         if dest.is_empty() {
-            return Err(error::ChiriError::IOError("dest table missing/empty".to_string()));
+            return Err(error::ChiriError::IOError(
+                "dest table missing/empty".to_string(),
+            ));
         }
 
         Ok(())
@@ -100,8 +105,7 @@ fn test_chiri_codec() {
 
 impl fmt::Display for Chiri {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let s = toml::to_string_pretty(self)
-            .map_err(|_| fmt::Error)?;
+        let s = toml::to_string_pretty(self).map_err(|_| fmt::Error)?;
         write!(f, "{s}")
     }
 }
@@ -127,7 +131,9 @@ impl Chiri {
         let petal = self.petal.clone().unwrap_or_default();
 
         if petal.is_empty() {
-            return Err(error::ChiriError::IOError("petal table missing".to_string()));
+            return Err(error::ChiriError::IOError(
+                "petal table missing".to_string(),
+            ));
         }
 
         let blank = String::new();
@@ -135,13 +141,17 @@ impl Chiri {
         let name = petal.get("name").unwrap_or(&blank);
 
         if name.is_empty() {
-            return Err(error::ChiriError::IOError("petal.name blank/missing".to_string()));
+            return Err(error::ChiriError::IOError(
+                "petal.name blank/missing".to_string(),
+            ));
         }
 
         let version = petal.get("version").unwrap_or(&blank);
 
         if version.is_empty() {
-            return Err(error::ChiriError::IOError("petal.version blank/missing".to_string()));
+            return Err(error::ChiriError::IOError(
+                "petal.version blank/missing".to_string(),
+            ));
         }
 
         Ok(())
@@ -151,13 +161,13 @@ impl Chiri {
     pub fn bloom(self: &mut Chiri) -> Result<(), error::ChiriError> {
         self.validate()?;
 
-        let pkgs = self.pkg
-            .clone()
-            .unwrap_or(Vec::new());
+        #[cfg(not(unix))]
+        eprintln!("warning: lossy source media file system metadata in non-unix environments");
+
+        let pkgs = self.pkg.clone().unwrap_or_default();
         let artifacts = artifacts_dir();
         self.artifacts = Some(artifacts.clone());
-        fs::create_dir_all(&artifacts)
-            .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+        fs::create_dir_all(&artifacts).map_err(|e| error::ChiriError::IOError(e.to_string()))?;
 
         for pkg in pkgs {
             let mut petal2 = self.petal.clone().unwrap_or_default();
@@ -194,4 +204,153 @@ impl Chiri {
 
         Ok(())
     }
+}
+
+/// add_dir_with_root appends a directory recursively with a custom root directory.
+pub fn add_dir_with_root<S: AsRef<path::Path>, T: AsRef<path::Path>>(
+    archive: &mut libarchive2::WriteArchive,
+    source: S,
+    target: T,
+) -> Result<(), error::ChiriError> {
+    let source = source.as_ref();
+    let target = target.as_ref();
+    let mut disk =
+        libarchive2::ReadDisk::new().map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+    disk.set_behavior(libarchive2::ReadDiskFlags::NO_XATTR)
+        .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+
+    // Preserve symlinks
+    disk.set_symlink_mode(libarchive2::SymlinkMode::Physical)
+        .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+
+    // Query unames/gnames
+    disk.set_standard_lookup()
+        .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+
+    disk.open(source)
+        .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+
+    while let Some(disk_entry_mut) = disk
+        .next_entry()
+        .map_err(|e| error::ChiriError::IOError(e.to_string()))?
+    {
+        if disk.can_descend() {
+            disk.descend()
+                .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+        }
+
+        let orig_path = path::PathBuf::from(disk_entry_mut.as_entry().pathname().ok_or(
+            error::ChiriError::IOError("disk entry missing pathname".to_string()),
+        )?);
+
+        let rel_path = orig_path
+            .strip_prefix(source)
+            .unwrap_or(path::Path::new(""));
+
+        let custom_archive_path = if rel_path.as_os_str().is_empty() {
+            target.to_path_buf()
+        } else {
+            target.join(rel_path)
+        };
+
+        let disk_entry = disk_entry_mut.as_entry();
+
+        //
+        // Strip libarchive creation header
+        //
+        let mut disk_entry2 = libarchive2::EntryMut::new();
+        disk_entry2.set_file_type(disk_entry.file_type());
+        disk_entry2
+            .set_pathname(&custom_archive_path)
+            .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+        disk_entry2.set_size(disk_entry.size());
+        disk_entry2
+            .set_perm(disk_entry.mode())
+            .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+        disk_entry2.set_uid(disk_entry.uid().unwrap_or(0u64));
+        disk_entry2.set_gid(disk_entry.gid().unwrap_or(0u64));
+        disk_entry2.set_atime(disk_entry.atime().unwrap_or(time::SystemTime::UNIX_EPOCH));
+        disk_entry2.set_mtime(disk_entry.mtime().unwrap_or(time::SystemTime::UNIX_EPOCH));
+
+        archive
+            .write_header(&disk_entry2)
+            .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+
+        if disk_entry.file_type() == libarchive2::FileType::RegularFile {
+            let data =
+                fs::read(orig_path).map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+            archive
+                .write_data(&data)
+                .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+        }
+    }
+
+    Ok(())
+}
+
+/// add_file_with_root appends a file with a custom path.
+pub fn add_file_with_root<S: AsRef<path::Path>, T: AsRef<path::Path>>(
+    archive: &mut libarchive2::WriteArchive,
+    source: S,
+    target: T,
+) -> Result<(), error::ChiriError> {
+    let source = source.as_ref();
+    let target = target.as_ref();
+
+    let metadata = fs::metadata(source).map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+
+    let mut entry = libarchive2::EntryMut::new();
+    entry
+        .set_pathname(target)
+        .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+    entry.set_file_type(std_filetype_to_libarchive(metadata.file_type()));
+    entry.set_size(metadata.len() as i64);
+    entry
+        .set_perm(metadata.mode())
+        .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+    entry.set_uid(metadata.uid() as u64);
+    entry.set_gid(metadata.gid() as u64);
+    entry.set_atime(i64_to_systemtime(metadata.atime())?);
+    entry.set_mtime(i64_to_systemtime(metadata.mtime())?);
+
+    archive
+        .write_header(&entry)
+        .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+    let data = fs::read(source).map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+    let _ = archive
+        .write_data(&data)
+        .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+    Ok(())
+}
+
+/// std_filetype_to_libarchive converts a standard FileType to a libarchive representation.
+pub fn std_filetype_to_libarchive(ft: std::fs::FileType) -> libarchive2::FileType {
+    if ft.is_dir() {
+        return libarchive2::FileType::Directory;
+    }
+
+    if ft.is_file() {
+        return libarchive2::FileType::RegularFile;
+    }
+
+    if ft.is_symlink() {
+        return libarchive2::FileType::SymbolicLink;
+    }
+
+    libarchive2::FileType::Unknown
+}
+
+/// i64_to_systemtime converts UNIX epochs to SystemTime.
+pub fn i64_to_systemtime(ts: i64) -> Result<time::SystemTime, error::ChiriError> {
+    let duration = time::Duration::from_secs(ts.unsigned_abs());
+
+    let ts_systemtime = if ts >= 0 {
+        time::UNIX_EPOCH.checked_add(duration)
+    } else {
+        time::UNIX_EPOCH.checked_sub(duration)
+    };
+
+    ts_systemtime.ok_or(error::ChiriError::IOError(format!(
+        "invalid timestamp: {ts}"
+    )))
 }

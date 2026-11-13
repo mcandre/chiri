@@ -1,18 +1,12 @@
 //! CLI chiri tool
 
-extern crate getopts;
-extern crate chiri;
-
 use die::{Die, die};
 
 use std::env;
 
 /// CLI entrypoint
 fn main() {
-    let brief: String = format!(
-        "Usage: {} [<OPTIONS>]",
-        env!("CARGO_PKG_NAME")
-    );
+    let brief: String = format!("Usage: {} [<OPTIONS>]", env!("CARGO_PKG_NAME"));
 
     let mut opts: getopts::Options = getopts::Options::new();
     opts.optflag("c", "clean", "remove artifacts");
