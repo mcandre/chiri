@@ -1,0 +1,5 @@
+error: The 'bitfield' attribute must have an unsigned integer type as its first argument.
+ --> tests/compile_error_cases/bitfield_unsupported_type.rs:4:1
+  |
+4 | pub struct Bitfield {
+  | ^^^
