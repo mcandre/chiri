@@ -29,14 +29,7 @@ Scatter packages like so many leaves on the wind.
 │   └── raygun_0.0.1-1_arm64.deb
 ├── freebsd-aarch64
 │   └── raygun-0.0.1_1.pkg
-├── freebsd-amd64
-│   └── raygun-0.0.1_1.pkg
-├── rpm
-│   ├── raygun-0.0.1-1.aarch64.rpm
-│   └── raygun-0.0.1-1.x86_64.rpm
-└── tarball
-    ├── raygun-0.0.1-1-amd64.tgz
-    └── raygun-0.0.1-1-arm64.tgz
+...
 ```
 
 chiri is programming language agnostic. For more programming language samples, see [examples](examples).
@@ -61,17 +54,13 @@ For details on building from source, see [DEVELOPMENT](DEVELOPMENT.md).
 
 # Package Managers
 
-* `alpine`
-* `appimage`
-* `deb`
-* `freebsd`
-* `gentoo`
-* `macos`
-* `netbsd`
-* `openbsd`
-* `rpm`
-* `tarball`
-* `windows`
+[Petals](https://docs.rs/chiri/latest/chiri/petal/enum.Petal.html)
+
+* AppImage
+* DEB
+* FreeBSD
+* RPM
+* Tarball
 
 # TIPS
 

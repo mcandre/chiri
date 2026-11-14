@@ -5,8 +5,6 @@ name = "raygun"
 identifier = "test.mars.raygun"
 version = "0.0.1"
 rev = "1"
-pkg_version = "2" # Monotonically increasing version number for OpenBSD packages
-# ebuild_category = "app-misc"
 maintainer = "Marvin the Martian <marvin@mars.test>"
 manufacturer = "Mars Corp"
 summary = "Space modulator"
@@ -14,22 +12,6 @@ description = "Illudium Q-36 explosive space modulator"
 copyright = "Copyright (C) 1948 Marvin the Martian"
 license = "0BSD"
 url = "https://mars.test/"
-
-# [[pkg]]
-# kind = "alpine"
-# petal.chipset = "x86_64"
-# # petal.dependencies = "bash"
-# # petal.apk_makedepends = "gcc"
-# # petal.apk_checkdepends = "diff"
-# dest."usr/bin" = "bin/linux/amd64"
-
-# [[pkg]]
-# kind = "alpine"
-# petal.chipset = "aarch64"
-# # petal.dependencies = "bash"
-# # petal.apk_makedepends = "gcc"
-# # petal.apk_checkdepends = "diff"
-# dest."usr/bin" = "bin/linux/arm64"
 
 [[pkg]]
 kind = "appimage"
@@ -79,94 +61,6 @@ petal.chipset = "freebsd:*:aarch64"
 # petal.license = "FreeBSD,GPL,MIT"
 dest."usr/local/bin" = "bin/freebsd/arm64"
 
-# [[pkg]]
-# kind = "gentoo"
-# petal.chipset = "amd64"
-# # petal.dependencies = "app-shells/bash"
-# dest."usr/bin" = "bin/linux/amd64"
-
-# [[pkg]]
-# kind = "gentoo"
-# petal.chipset = "arm64"
-# # petal.dependencies = "app-shells/bash"
-# dest."usr/bin" = "bin/linux/arm64"
-
-# [[pkg]]
-# kind = "macos"
-# petal.chipset = "x86_64"
-# # petal.dependencies = "bash"
-# #
-# # macOS user:staff
-# #
-# # petal.uid = "501"
-# # petal.gid = "20"
-# # dest."Applications/raygun.app" = "raygun.app"
-# #
-# # macOS root:wheel
-# #
-# # petal.uid = "0"
-# # petal.gid = "0"
-# dest."usr/local/bin" = "bin/darwin/amd64"
-
-# [[pkg]]
-# kind = "macos"
-# petal.chipset = "arm64"
-# # petal.dependencies = "bash"
-# #
-# # macOS user:staff
-# #
-# # petal.uid = "501"
-# # petal.gid = "20"
-# # dest."Applications/raygun.app" = "raygun.app"
-# #
-# # macOS root:wheel
-# #
-# # petal.uid = "0"
-# # petal.gid = "0"
-# dest."usr/local/bin" = "bin/darwin/arm64"
-
-# [[pkg]]
-# kind = "netbsd"
-# petal.chipset = "x86_64"
-# # petal.dependencies = "bash"
-# # petal.pkg_opsys = "NetBSD"
-# petal.pkg_os_version = "10.1"
-# # byte estimate, including dependencies
-# petal.pkg_size_all = "1000"
-# # petal.pkg_localbase = "/usr/pkg"
-# dest."bin" = "bin/netbsd/amd64"
-
-# [[pkg]]
-# kind = "netbsd"
-# petal.chipset = "aarch64"
-# # petal.dependencies = "bash"
-# # petal.pkg_opsys = "NetBSD"
-# petal.pkg_os_version = "10.1"
-# # byte estimate, including dependencies
-# petal.pkg_size_all = "1000"
-# # petal.pkg_localbase = "/usr/pkg"
-# dest."bin" = "bin/netbsd/arm64"
-
-# [[pkg]]
-# kind = "openbsd"
-# petal.chipset = "amd64"
-# petal.pkgpath = "misc/raygun"
-# # petal.dependencies = """
-# # shells/bash
-# # """
-# # petal.pkg_prefix = "/usr/local"
-# dest."bin" = "bin/openbsd/amd64"
-
-# [[pkg]]
-# kind = "openbsd"
-# petal.chipset = "arm64"
-# petal.pkgpath = "misc/raygun"
-# # petal.dependencies = """
-# # shells/bash
-# # """
-# # petal.pkg_prefix = "/usr/local"
-# dest."bin" = "bin/openbsd/arm64"
-
 [[pkg]]
 kind = "rpm"
 petal.chipset = "x86_64"
@@ -188,19 +82,3 @@ dest."opt/raygun/bin" = "bin/linux/amd64"
 kind = "tarball"
 petal.chipset = "arm64"
 dest."opt/raygun/bin" = "bin/linux/arm64"
-
-# [[pkg]]
-# kind = "windows"
-# petal.chipset = "x64"
-# petal.msi_upgrade_code = "69F159AD-CE9C-4EE8-A25D-BB4E8A226D73"
-# # petal.msi_lcid = "1033"
-# # petal.msi_codepage = "1252"
-# dest."bin" = "bin/windows/amd64"
-
-# [[pkg]]
-# kind = "windows"
-# petal.chipset = "arm64"
-# petal.msi_upgrade_code = "69F159AD-CE9C-4EE8-A25D-BB4E8A226D73"
-# # petal.msi_lcid = "1033"
-# # petal.msi_codepage = "1252"
-# dest."bin" = "bin/windows/arm64"

@@ -7,21 +7,19 @@ use crate::{Chiri, Pkg, error::ChiriError};
 
 /// Petal generates software packages for various package managers.
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
-#[serde(rename_all = "snake_case")]
+#[serde(rename_all = "lowercase")]
 pub enum Petal {
     /// Tarball builds generic UNIX tape archives.
     #[default]
     Tarball,
 
     /// AppImage builds AppImage packages.
-    #[serde(rename = "appimage")]
     AppImage,
 
     /// Deb builds Debian family packages.
     Deb,
 
     /// FreeBSD builds FreeBSD family packages.
-    #[serde(rename = "freebsd")]
     FreeBSD,
 
     /// Rpm builds RHEL family packages.
