@@ -25,4 +25,9 @@ jobs:
     - uses: "dtolnay/rust-toolchain@stable"
       with:
         toolchain: "1.98.0"
+    - run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          libacl1-dev \
+          libbz2-dev
     - run: "make test"
