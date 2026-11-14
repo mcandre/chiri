@@ -13,15 +13,19 @@ pub enum Petal {
     #[default]
     Tarball,
 
+    /// AppImage builds AppImage packages.
+    #[serde(rename = "appimage")]
+    AppImage,
+
     /// Deb builds Debian family packages.
     Deb,
-
-    /// Rpm builds RHEL family packages.
-    Rpm,
 
     /// FreeBSD builds FreeBSD family packages.
     #[serde(rename = "freebsd")]
     FreeBSD,
+
+    /// Rpm builds RHEL family packages.
+    Rpm,
 }
 
 impl Petal {
@@ -33,10 +37,11 @@ impl Petal {
     /// * pkg.petal.version present, nonblank
     pub fn bloom(self: &Petal, pkg: &Pkg, chiri: &Chiri) -> Result<(), ChiriError> {
         match self {
-            Petal::Tarball => self.emit_tarball(pkg, chiri),
+            Petal::AppImage => self.emit_appimage(pkg, chiri),
             Petal::Deb => self.emit_deb(pkg, chiri),
-            Petal::Rpm => self.emit_rpm(pkg, chiri),
             Petal::FreeBSD => self.emit_freebsd(pkg, chiri),
+            Petal::Rpm => self.emit_rpm(pkg, chiri),
+            Petal::Tarball => self.emit_tarball(pkg, chiri),
         }
     }
 }

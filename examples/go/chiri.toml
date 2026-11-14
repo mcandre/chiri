@@ -31,19 +31,23 @@ url = "https://mars.test/"
 # # petal.apk_checkdepends = "diff"
 # dest."usr/bin" = "bin/linux/arm64"
 
-# [[pkg]]
-# kind = "app_image"
-# petal.chipset = "x86_64"
-# petal.appimage_executable = "raygun"
-# dest."usr/bin" = "bin/linux/amd64"
-# dest."raygun.png" = "raygun.png"
+[[pkg]]
+kind = "appimage"
+# https://specifications.freedesktop.org/menu/latest/category-registry.html
+petal.categories = "Science;Utility"
+petal.chipset = "x86_64"
+petal.executable = "usr/bin/raygun"
+petal.icon = "raygun.png"
+dest."usr/bin" = "bin/linux/amd64"
 
-# [[pkg]]
-# kind = "app_image"
-# petal.chipset = "aarch64"
-# petal.appimage_executable = "raygun"
-# dest."usr/bin" = "bin/linux/arm64"
-# dest."raygun.png" = "raygun.png"
+[[pkg]]
+kind = "appimage"
+# https://specifications.freedesktop.org/menu/latest/category-registry.html
+petal.categories = "Science;Utility"
+petal.chipset = "aarch64"
+petal.executable = "usr/bin/raygun"
+petal.icon = "raygun.png"
+dest."usr/bin" = "bin/linux/arm64"
 
 [[pkg]]
 kind = "deb"

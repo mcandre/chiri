@@ -2,21 +2,15 @@
 
 [![Crates.io Downloads (recent)](https://img.shields.io/crates/dr/chiri?label=crate%20downloads)](https://crates.io/crates/chiri) [![docs.rs](https://img.shields.io/docsrs/chiri)](https://docs.rs/chiri/latest/chiri/) [![license](https://img.shields.io/badge/license-BSD-0)](LICENSE.md) [![Donate](https://img.shields.io/badge/%E2%99%A5-Sponsor-BF3988)](https://github.com/sponsors/mcandre)
 
-(Work in Progress)
-
-花ちりて木間の寺と成にけり
-
-_Flowers scattered, a wreathed temple arose._
-
-—Yosa Buson
+![sakura bloom](chiri.webp)
 
 # ABOUT
 
-chiri builds install media for a wide variety of platforms.
+chiri builds installers for a wide variety of platforms.
 
 Through chiri, we encourage more developers to publish crossplatform applications.
 
-May your userbase flourish.
+Scatter packages like so many leaves on the wind.
 
 # EXAMPLES
 
