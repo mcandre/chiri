@@ -3,7 +3,11 @@ use tempfile;
 use std::fs;
 use std::path;
 
-use crate::{Chiri, Pkg, error::ChiriError, petal::Petal};
+use crate::{
+    Chiri, Pkg,
+    error::{ChiriError, ResultExt},
+    petal::Petal,
+};
 
 impl Petal {
     /// emit_rpm generates RHEL family packages.
@@ -32,21 +36,21 @@ impl Petal {
         let dest = pkg.dest.clone().unwrap_or_default();
 
         if chipset.is_empty() {
-            return Err(ChiriError::IOError(
-                "petal.chipset blank/missing".to_string(),
-            ));
+            return Err(ChiriError::ValidationError(String::from(
+                "petal.chipset blank/missing",
+            )));
         }
 
         if license.is_empty() {
-            return Err(ChiriError::IOError(
-                "petal.license blank/missing".to_string(),
-            ));
+            return Err(ChiriError::ValidationError(String::from(
+                "petal.license blank/missing",
+            )));
         }
 
         if summary.is_empty() {
-            return Err(ChiriError::IOError(
-                "petal.summary blank/missing".to_string(),
-            ));
+            return Err(ChiriError::ValidationError(String::from(
+                "petal.summary blank/missing",
+            )));
         }
 
         //
@@ -70,7 +74,7 @@ impl Petal {
                 let parts = dependency_at_separated.split('@').collect::<Vec<&str>>();
 
                 if parts.len() != 2 {
-                    return Err(ChiriError::IOError(format!(
+                    return Err(ChiriError::ValidationError(format!(
                         "invalid rpm dependencies: {dependencies_comma_separated}"
                     )));
                 }
@@ -78,8 +82,8 @@ impl Petal {
                 let (name, version) = (parts[0], parts[1]);
 
                 if name.is_empty() {
-                    return Err(ChiriError::IOError(format!(
-                        "blank name in rpm dependencies: {dependencies_comma_separated}"
+                    return Err(ChiriError::ValidationError(format!(
+                        "blank package name in rpm dependencies: {dependencies_comma_separated}"
                     )));
                 }
 
@@ -108,8 +112,6 @@ impl Petal {
         let build_config = rpm::BuildConfig::default().compression(rpm::CompressionType::Gzip);
         rpm_pkg.using_config(build_config);
 
-        let t = tempfile::tempdir().map_err(|e| ChiriError::IOError(e.to_string()))?;
-
         //
         // Generate COPYING
         //
@@ -124,70 +126,57 @@ impl Petal {
         eula.push_str(license);
         eula.push('\n');
 
+        let t = tempfile::tempdir().with_path("<tmp>")?;
         let copying_pth = t.path().join("COPYING");
-        fs::write(&copying_pth, eula).map_err(|e| ChiriError::IOError(e.to_string()))?;
+
+        fs::write(&copying_pth, eula).with_path(&copying_pth)?;
         let copying_entry_pth = format!("/usr/share/licenses/{name}/COPYING");
         let copying_options = rpm::FileOptions::new(copying_entry_pth);
-        rpm_pkg
-            .with_file(copying_pth, copying_options)
-            .map_err(|e| ChiriError::IOError(e.to_string()))?;
+        rpm_pkg.with_file(copying_pth, copying_options)?;
 
         for (target, source) in dest {
             let target = format!("/{target}");
             let target = path::Path::new(&target);
             let source = path::Path::new(&source);
-            let metadata = fs::metadata(&source).map_err(|e| ChiriError::IOError(e.to_string()))?;
+            let metadata = fs::metadata(source).with_path(source)?;
 
             if metadata.is_dir() {
                 for entry in walkdir::WalkDir::new(source) {
-                    let entry = entry.map_err(|e| ChiriError::IOError(e.to_string()))?;
+                    let entry = entry?;
                     let entry_pth = entry.path();
-
-                    let md = entry
-                        .metadata()
-                        .map_err(|e| ChiriError::IOError(e.to_string()))?;
+                    let md = entry.metadata()?;
 
                     if md.is_dir() {
                         continue;
                     }
 
                     if !md.is_file() {
-                        return Err(ChiriError::IOError(format!("unsupported file system file type for path: {:?}", entry_pth)));
+                        return Err(ChiriError::UnsupportedFileSystemFileTypeError(
+                            entry_pth.to_path_buf(),
+                        ));
                     }
 
-                    let entry_adopted = target.join(
-                        entry_pth
-                            .strip_prefix(source)
-                            .map_err(|e| ChiriError::IOError(e.to_string()))?,
-                    );
+                    let entry_adopted = target.join(entry_pth.strip_prefix(source)?);
                     let entry_adopted_string = entry_adopted
                         .components()
                         .collect::<path::PathBuf>()
                         .to_str()
-                        .ok_or(ChiriError::IOError(format!(
-                            "unable to process source path: {:?}",
-                            entry_adopted
-                        )))?
+                        .ok_or(ChiriError::UnrenderablePathError(entry_adopted))?
                         .to_string();
 
                     let options = rpm::FileOptions::new(&entry_adopted_string);
-                    rpm_pkg
-                        .with_file(entry_pth, options)
-                        .map_err(|e| ChiriError::IOError(e.to_string()))?;
+                    rpm_pkg.with_file(entry_pth, options)?;
                 }
             } else if metadata.is_file() {
                 let target_pth = target
                     .to_str()
-                    .ok_or(ChiriError::IOError(format!("unable to process path: {:?}", target)))?;
+                    .ok_or(ChiriError::UnrenderablePathError(target.to_path_buf()))?;
                 let options = rpm::FileOptions::new(target_pth);
-                rpm_pkg
-                    .with_file(&source, options)
-                    .map_err(|e| ChiriError::IOError(e.to_string()))?;
+                rpm_pkg.with_file(source, options)?;
             } else {
-                return Err(ChiriError::IOError(format!(
-                    "unsupported file system file type for path: {:?}",
-                    source
-                )));
+                return Err(ChiriError::UnsupportedFileSystemFileTypeError(
+                    source.to_path_buf(),
+                ));
             }
         }
 
@@ -205,14 +194,10 @@ impl Petal {
 
         basename.push_str(".rpm");
         let rpm_artifacts_root = chiri.artifacts.clone().unwrap().join("rpm");
-
-        fs::create_dir_all(&rpm_artifacts_root).map_err(|e| ChiriError::IOError(e.to_string()))?;
+        fs::create_dir_all(&rpm_artifacts_root).with_path(&rpm_artifacts_root)?;
         let artifact_filename = rpm_artifacts_root.join(basename);
+        rpm_pkg.build()?.write_file(artifact_filename)?;
 
-        rpm_pkg
-            .build()
-            .map_err(|e| ChiriError::IOError(e.to_string()))?
-            .write_file(artifact_filename)
-            .map_err(|e| ChiriError::IOError(e.to_string()))
+        Ok(())
     }
 }

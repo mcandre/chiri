@@ -17,6 +17,8 @@ pub mod error;
 pub mod petal;
 pub mod petals;
 
+use crate::error::{ChiriError, ResultExt};
+
 /// CONFIGURATION_FILENAME denotes the file path to an optional TOML configuration file,
 /// relative to the current working directory.
 pub static CONFIGURATION_FILENAME: &str = "chiri.toml";
@@ -56,20 +58,20 @@ impl Pkg {
     /// Checks:
     ///
     /// * dest table present, nonempty
-    pub fn validate(self) -> Result<(), error::ChiriError> {
+    pub fn validate(self) -> Result<(), ChiriError> {
         let dest = self.dest.unwrap_or_default();
 
         if dest.is_empty() {
-            return Err(error::ChiriError::IOError(
-                "dest table missing/empty".to_string(),
-            ));
+            return Err(ChiriError::ValidationError(String::from(
+                "dest table missing/empty",
+            )));
         }
 
         Ok(())
     }
 
     /// bloom generates an installer.
-    pub fn bloom(self, chiri: &Chiri) -> Result<(), error::ChiriError> {
+    pub fn bloom(self, chiri: &Chiri) -> Result<(), ChiriError> {
         self.kind.bloom(&self, chiri)
     }
 }
@@ -112,11 +114,10 @@ impl fmt::Display for Chiri {
 
 impl Chiri {
     /// load generates a Chiri.
-    pub fn load(pth: &str) -> Result<Self, error::ChiriError> {
-        let toml_string = fs::read_to_string(pth)
-            .map_err(|_| error::ChiriError::IOError(format!("unable to read file: {pth}")))?;
-        let c: Chiri = toml::from_str(&toml_string)
-            .map_err(|e| error::ChiriError::TOMLParseError(e.message().to_string()))?;
+    pub fn load(pth: &str) -> Result<Self, ChiriError> {
+        let pth = path::PathBuf::from(pth);
+        let toml_string = fs::read_to_string(&pth).with_path(&pth)?;
+        let c: Chiri = toml::from_str(&toml_string)?;
         Ok(c)
     }
 
@@ -127,38 +128,37 @@ impl Chiri {
     /// * petal table present
     /// * petal.name present, nonblank
     /// * petal.version present, nonblank
-    pub fn validate(self: &Chiri) -> Result<(), error::ChiriError> {
+    pub fn validate(self: &Chiri) -> Result<(), ChiriError> {
         let petal = self.petal.clone().unwrap_or_default();
 
         if petal.is_empty() {
-            return Err(error::ChiriError::IOError(
-                "petal table missing".to_string(),
-            ));
+            return Err(ChiriError::ValidationError(String::from(
+                "petal table missing",
+            )));
         }
 
         let blank = String::new();
-
         let name = petal.get("name").unwrap_or(&blank);
 
         if name.is_empty() {
-            return Err(error::ChiriError::IOError(
-                "petal.name blank/missing".to_string(),
-            ));
+            return Err(ChiriError::ValidationError(String::from(
+                "petal.name blank/missing",
+            )));
         }
 
         let version = petal.get("version").unwrap_or(&blank);
 
         if version.is_empty() {
-            return Err(error::ChiriError::IOError(
-                "petal.version blank/missing".to_string(),
-            ));
+            return Err(ChiriError::ValidationError(String::from(
+                "petal.version blank/missing",
+            )));
         }
 
         Ok(())
     }
 
     /// bloom generates install media.
-    pub fn bloom(self: &mut Chiri) -> Result<(), error::ChiriError> {
+    pub fn bloom(self: &mut Chiri) -> Result<(), ChiriError> {
         self.validate()?;
 
         #[cfg(not(unix))]
@@ -167,7 +167,7 @@ impl Chiri {
         let pkgs = self.pkg.clone().unwrap_or_default();
         let artifacts = artifacts_dir();
         self.artifacts = Some(artifacts.clone());
-        fs::create_dir_all(&artifacts).map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+        fs::create_dir_all(&artifacts).with_path(&artifacts)?;
 
         for pkg in pkgs {
             let mut petal2 = self.petal.clone().unwrap_or_default();
@@ -196,10 +196,9 @@ impl Chiri {
     }
 
     /// clean removes artifacts.
-    pub fn clean(self: &Chiri) -> Result<(), error::ChiriError> {
+    pub fn clean(self: &Chiri) -> Result<(), ChiriError> {
         if path::Path::new(DEFAULT_CACHE).exists() {
-            fs::remove_dir_all(DEFAULT_CACHE)
-                .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+            fs::remove_dir_all(DEFAULT_CACHE).with_path(DEFAULT_CACHE)?;
         }
 
         Ok(())
@@ -211,39 +210,36 @@ pub fn add_dir_with_root<S: AsRef<path::Path>, T: AsRef<path::Path>>(
     archive: &mut libarchive2::WriteArchive,
     source: S,
     target: T,
-) -> Result<(), error::ChiriError> {
+) -> Result<(), ChiriError> {
     let source = source.as_ref();
     let target = target.as_ref();
-    let mut disk =
-        libarchive2::ReadDisk::new().map_err(|e| error::ChiriError::IOError(e.to_string()))?;
-    disk.set_behavior(libarchive2::ReadDiskFlags::NO_XATTR)
-        .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+    let mut disk = libarchive2::ReadDisk::new()?;
+    disk.set_behavior(libarchive2::ReadDiskFlags::NO_XATTR)?;
 
     // Preserve symlinks
-    disk.set_symlink_mode(libarchive2::SymlinkMode::Physical)
-        .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+    disk.set_symlink_mode(libarchive2::SymlinkMode::Physical)?;
 
     // Query unames/gnames
-    disk.set_standard_lookup()
-        .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+    disk.set_standard_lookup()?;
 
-    disk.open(source)
-        .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+    disk.open(source)?;
 
-    while let Some(disk_entry_mut) = disk
-        .next_entry()
-        .map_err(|e| error::ChiriError::IOError(e.to_string()))?
-    {
+    while let Some(disk_entry_mut) = disk.next_entry()? {
         if disk.can_descend() {
-            disk.descend()
-                .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+            disk.descend()?;
         }
 
-        let orig_path = path::PathBuf::from(disk_entry_mut.as_entry().pathname().ok_or(
-            error::ChiriError::IOError("disk entry missing pathname".to_string()),
-        )?);
+        let orig_string =
+            disk_entry_mut
+                .as_entry()
+                .pathname()
+                .ok_or(ChiriError::UnrenderablePathError(path::PathBuf::from(
+                    "<null>",
+                )))?;
 
-        let rel_path = orig_path
+        let orig_pathbuf = path::PathBuf::from(orig_string);
+
+        let rel_path = orig_pathbuf
             .strip_prefix(source)
             .unwrap_or(path::Path::new(""));
 
@@ -260,28 +256,19 @@ pub fn add_dir_with_root<S: AsRef<path::Path>, T: AsRef<path::Path>>(
         //
         let mut disk_entry2 = libarchive2::EntryMut::new();
         disk_entry2.set_file_type(disk_entry.file_type());
-        disk_entry2
-            .set_pathname(&custom_archive_path)
-            .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+        disk_entry2.set_pathname(&custom_archive_path)?;
         disk_entry2.set_size(disk_entry.size());
-        disk_entry2
-            .set_perm(disk_entry.mode())
-            .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+        disk_entry2.set_perm(disk_entry.mode())?;
         disk_entry2.set_uid(disk_entry.uid().unwrap_or(0u64));
         disk_entry2.set_gid(disk_entry.gid().unwrap_or(0u64));
         disk_entry2.set_atime(disk_entry.atime().unwrap_or(time::SystemTime::UNIX_EPOCH));
         disk_entry2.set_mtime(disk_entry.mtime().unwrap_or(time::SystemTime::UNIX_EPOCH));
 
-        archive
-            .write_header(&disk_entry2)
-            .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+        archive.write_header(&disk_entry2)?;
 
         if disk_entry.file_type() == libarchive2::FileType::RegularFile {
-            let data =
-                fs::read(orig_path).map_err(|e| error::ChiriError::IOError(e.to_string()))?;
-            archive
-                .write_data(&data)
-                .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+            let data = fs::read(&orig_pathbuf).with_path(&orig_pathbuf)?;
+            archive.write_data(&data)?;
         }
     }
 
@@ -293,33 +280,25 @@ pub fn add_file_with_root<S: AsRef<path::Path>, T: AsRef<path::Path>>(
     archive: &mut libarchive2::WriteArchive,
     source: S,
     target: T,
-) -> Result<(), error::ChiriError> {
+) -> Result<(), ChiriError> {
     let source = source.as_ref();
     let target = target.as_ref();
 
-    let metadata = fs::metadata(source).map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+    let metadata = fs::metadata(source).with_path(source)?;
 
     let mut entry = libarchive2::EntryMut::new();
-    entry
-        .set_pathname(target)
-        .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+    entry.set_pathname(target)?;
     entry.set_file_type(std_filetype_to_libarchive(metadata.file_type()));
     entry.set_size(metadata.len() as i64);
-    entry
-        .set_perm(metadata.mode())
-        .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+    entry.set_perm(metadata.mode())?;
     entry.set_uid(metadata.uid() as u64);
     entry.set_gid(metadata.gid() as u64);
     entry.set_atime(i64_to_systemtime(metadata.atime())?);
     entry.set_mtime(i64_to_systemtime(metadata.mtime())?);
+    archive.write_header(&entry)?;
+    let data = fs::read(source).with_path(source)?;
+    let _ = archive.write_data(&data)?;
 
-    archive
-        .write_header(&entry)
-        .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
-    let data = fs::read(source).map_err(|e| error::ChiriError::IOError(e.to_string()))?;
-    let _ = archive
-        .write_data(&data)
-        .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
     Ok(())
 }
 
@@ -341,7 +320,7 @@ pub fn std_filetype_to_libarchive(ft: std::fs::FileType) -> libarchive2::FileTyp
 }
 
 /// i64_to_systemtime converts UNIX epochs to SystemTime.
-pub fn i64_to_systemtime(ts: i64) -> Result<time::SystemTime, error::ChiriError> {
+pub fn i64_to_systemtime(ts: i64) -> Result<time::SystemTime, ChiriError> {
     let duration = time::Duration::from_secs(ts.unsigned_abs());
 
     let ts_systemtime = if ts >= 0 {
@@ -350,28 +329,22 @@ pub fn i64_to_systemtime(ts: i64) -> Result<time::SystemTime, error::ChiriError>
         time::UNIX_EPOCH.checked_sub(duration)
     };
 
-    ts_systemtime.ok_or(error::ChiriError::IOError(format!(
+    ts_systemtime.ok_or(ChiriError::ValidationError(format!(
         "invalid timestamp: {ts}"
     )))
 }
 
 /// recursive_file_size_bytes calculates byte size of a given path.
-pub fn recursive_file_size_bytes<P: AsRef<path::Path>>(pth: P) -> Result<u64, error::ChiriError> {
+pub fn recursive_file_size_bytes<P: AsRef<path::Path>>(pth: P) -> Result<u64, ChiriError> {
     let p = pth.as_ref();
-    let metadata = p
-        .metadata()
-        .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
+    let metadata = p.metadata().with_path(p)?;
 
     if metadata.is_dir() {
         let mut size_b = 0u64;
 
         for entry in walkdir::WalkDir::new(p) {
-            let entry = entry.map_err(|e| error::ChiriError::IOError(e.to_string()))?;
-
-            let md = entry
-                .metadata()
-                .map_err(|e| error::ChiriError::IOError(e.to_string()))?;
-
+            let entry = entry?;
+            let md = entry.metadata()?;
             size_b += md.len();
         }
 
@@ -382,8 +355,7 @@ pub fn recursive_file_size_bytes<P: AsRef<path::Path>>(pth: P) -> Result<u64, er
         return Ok(metadata.len());
     }
 
-    Err(error::ChiriError::IOError(format!(
-        "unsupported file system file type for path: {:?}",
-        p
-    )))
+    Err(ChiriError::UnsupportedFileSystemFileTypeError(
+        p.to_path_buf(),
+    ))
 }

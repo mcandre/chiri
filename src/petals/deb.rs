@@ -4,7 +4,11 @@ use tempfile;
 use std::fs;
 use std::path;
 
-use crate::{Chiri, Pkg, add_dir_with_root, add_file_with_root, error::ChiriError, petal::Petal};
+use crate::{
+    Chiri, Pkg, add_dir_with_root, add_file_with_root,
+    error::{ChiriError, ResultExt},
+    petal::Petal,
+};
 
 impl Petal {
     /// emit_deb generates Debian family packages.
@@ -34,36 +38,36 @@ impl Petal {
         let dest = pkg.dest.clone().unwrap_or_default();
 
         if chipset.is_empty() {
-            return Err(ChiriError::IOError(
-                "petal.chipset blank/missing".to_string(),
-            ));
+            return Err(ChiriError::ValidationError(String::from(
+                "petal.chipset blank/missing",
+            )));
         }
 
         if copyright.is_empty() {
-            return Err(ChiriError::IOError(
-                "petal.copyright blank/missing".to_string(),
-            ));
+            return Err(ChiriError::ValidationError(String::from(
+                "petal.copyright blank/missing",
+            )));
         }
 
         if license.is_empty() {
-            return Err(ChiriError::IOError(
-                "petal.license blank/missing".to_string(),
-            ));
+            return Err(ChiriError::ValidationError(String::from(
+                "petal.license blank/missing",
+            )));
         }
 
         if maintainer.is_empty() {
-            return Err(ChiriError::IOError(
-                "petal.maintainer blank/missing".to_string(),
-            ));
+            return Err(ChiriError::ValidationError(String::from(
+                "petal.maintainer blank/missing",
+            )));
         }
 
         if description.is_empty() {
-            return Err(ChiriError::IOError(
-                "petal.description blank/missing".to_string(),
-            ));
+            return Err(ChiriError::ValidationError(String::from(
+                "petal.description blank/missing",
+            )));
         }
 
-        let t = tempfile::tempdir().map_err(|e| ChiriError::IOError(e.to_string()))?;
+        let t = tempfile::tempdir().with_path("<tmp>")?;
         let t_pth = t.path();
 
         //
@@ -74,8 +78,7 @@ impl Petal {
         let mut control_archive = libarchive2::WriteArchive::new()
             .format(libarchive2::ArchiveFormat::TarGnu)
             .compression(libarchive2::CompressionFormat::Zstd)
-            .open_file(&control_artifact_pth)
-            .map_err(|e| ChiriError::IOError(e.to_string()))?;
+            .open_file(&control_artifact_pth)?;
 
         let mut control = String::from("Package: ");
         control.push_str(name);
@@ -107,9 +110,7 @@ impl Petal {
         }
 
         control.push('\n');
-        control_archive
-            .add_file("control", control.as_bytes())
-            .map_err(|e| ChiriError::IOError(e.to_string()))?;
+        control_archive.add_file("control", control.as_bytes())?;
 
         let mut eula = String::from("Files: *");
         eula.push_str("\nCopyright: ");
@@ -118,12 +119,8 @@ impl Petal {
         eula.push_str(license);
         eula.push('\n');
 
-        control_archive
-            .add_file("copyright", eula.as_bytes())
-            .map_err(|e| ChiriError::IOError(e.to_string()))?;
-        control_archive
-            .finish()
-            .map_err(|e| ChiriError::IOError(e.to_string()))?;
+        control_archive.add_file("copyright", eula.as_bytes())?;
+        control_archive.finish()?;
 
         //
         // Generate data.tar.zst
@@ -133,26 +130,25 @@ impl Petal {
         let mut data_archive = libarchive2::WriteArchive::new()
             .format(libarchive2::ArchiveFormat::TarGnu)
             .compression(libarchive2::CompressionFormat::Zstd)
-            .open_file(&data_artifact_pth)
-            .map_err(|e| ChiriError::IOError(e.to_string()))?;
+            .open_file(&data_artifact_pth)?;
 
         for (target, source) in dest {
-            let metadata = fs::metadata(&source).map_err(|e| ChiriError::IOError(e.to_string()))?;
+            let metadata = fs::metadata(&source).with_path(&source)?;
             let source_pth = path::Path::new(&source);
             let target_pth = path::Path::new(&target);
 
             if metadata.is_dir() {
-                add_dir_with_root(&mut data_archive, source_pth, target_pth)
-                    .map_err(|e| ChiriError::IOError(e.to_string()))?;
+                add_dir_with_root(&mut data_archive, source_pth, target_pth)?;
             } else {
-                add_file_with_root(&mut data_archive, source_pth, target_pth)
-                    .map_err(|e| ChiriError::IOError(e.to_string()))?;
+                add_file_with_root(&mut data_archive, source_pth, target_pth)?;
             }
         }
 
-        data_archive
-            .finish()
-            .map_err(|e| ChiriError::IOError(e.to_string()))?;
+        data_archive.finish()?;
+
+        //
+        // Generate DEB
+        //
 
         let mut basename = format!("{name}_{version}");
 
@@ -168,35 +164,32 @@ impl Petal {
 
         basename.push_str(".deb");
 
-        //
-        // Generate DEB
-        //
-
         let deb_artifacts_root = chiri.artifacts.clone().unwrap().join("deb");
-        fs::create_dir_all(&deb_artifacts_root).map_err(|e| ChiriError::IOError(e.to_string()))?;
+
+        fs::create_dir_all(&deb_artifacts_root).with_path(&deb_artifacts_root)?;
+
         let artifact_filename = deb_artifacts_root.join(basename);
+
         let mut deb_archive = libarchive2::WriteArchive::new()
             .format(libarchive2::ArchiveFormat::Ar)
-            .open_file(artifact_filename)
-            .map_err(|e| ChiriError::IOError(e.to_string()))?;
+            .open_file(artifact_filename)?;
 
-        deb_archive
-            .add_file("debian-binary", b"2.0\n")
-            .map_err(|e| ChiriError::IOError(e.to_string()))?;
+        deb_archive.add_file("debian-binary", b"2.0\n")?;
+
         add_file_with_root(
             &mut deb_archive,
             control_artifact_pth,
             path::Path::new("control.tar.zst"),
-        )
-        .map_err(|e| ChiriError::IOError(e.to_string()))?;
+        )?;
+
         add_file_with_root(
             &mut deb_archive,
             data_artifact_pth,
             path::Path::new("data.tar.zst"),
-        )
-        .map_err(|e| ChiriError::IOError(e.to_string()))?;
-        deb_archive
-            .finish()
-            .map_err(|e| ChiriError::IOError(e.to_string()))
+        )?;
+
+        deb_archive.finish()?;
+
+        Ok(())
     }
 }

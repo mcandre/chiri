@@ -64,13 +64,13 @@ dest."usr/local/bin" = "bin/freebsd/arm64"
 kind = "rpm"
 petal.chipset = "x86_64"
 # petal.dependencies = "bash@5,curl@8"
-dest."usr/bin/raygun" = "bin/linux/amd64/raygun"
+dest."usr/bin" = "bin/linux/amd64"
 
 [[pkg]]
 kind = "rpm"
 petal.chipset = "aarch64"
 # petal.dependencies = "bash@5,curl@8"
-dest."usr/bin/raygun" = "bin/linux/arm64/raygun"
+dest."usr/bin" = "bin/linux/arm64"
 
 [[pkg]]
 kind = "tarball"

@@ -1,19 +1,62 @@
-use std::fmt;
+use rpm;
+use thiserror::Error;
+use toml;
+
+use std::io;
+use std::path;
 use std::process;
 
 /// ChiriError models unsuccessful program states.
-#[derive(Debug)]
+#[derive(Error, Debug)]
 pub enum ChiriError {
-    IOError(String),
-    TOMLParseError(String),
+    #[error("{0}")]
+    ValidationError(String),
+
+    #[error("unable to render path: {0}")]
+    UnrenderablePathError(path::PathBuf),
+
+    #[error("unsupported file system file type: {0}")]
+    UnsupportedFileSystemFileTypeError(path::PathBuf),
+
+    #[error("{source}: {path}")]
+    IOError {
+        source: io::Error,
+        path: path::PathBuf,
+    },
+
+    #[error(transparent)]
+    StripPrefixError(#[from] path::StripPrefixError),
+
+    #[error(transparent)]
+    TOMLParseError(#[from] toml::de::Error),
+
+    #[error(transparent)]
+    LibarchiveError(#[from] libarchive2::Error),
+
+    #[error(transparent)]
+    WalkdirError(#[from] walkdir::Error),
+
+    #[error(transparent)]
+    ReqwestError(#[from] reqwest::Error),
+
+    #[error(transparent)]
+    AppImageError(#[from] appimage::Error),
+
+    #[error(transparent)]
+    RPMError(#[from] rpm::Error),
 }
 
-impl fmt::Display for ChiriError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            ChiriError::IOError(e) => write!(f, "{e}"),
-            ChiriError::TOMLParseError(e) => write!(f, "{e}"),
-        }
+pub trait ResultExt<T> {
+    // with_path wraps errors, preserving crucial path details.
+    fn with_path<P: AsRef<path::Path>>(self, path: P) -> Result<T, ChiriError>;
+}
+
+impl<T> ResultExt<T> for std::io::Result<T> {
+    fn with_path<P: AsRef<path::Path>>(self, path: P) -> Result<T, ChiriError> {
+        self.map_err(|source| ChiriError::IOError {
+            source,
+            path: path.as_ref().to_path_buf(),
+        })
     }
 }
 
