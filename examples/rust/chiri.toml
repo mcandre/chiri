@@ -1,0 +1,84 @@
+# debug = true
+
+[petal]
+name = "raygun"
+identifier = "test.mars.raygun"
+version = "0.0.1"
+rev = "1"
+maintainer = "Marvin the Martian <marvin@mars.test>"
+manufacturer = "Mars Corp"
+summary = "Space modulator"
+description = "Illudium Q-36 explosive space modulator"
+copyright = "Copyright (C) 1948 Marvin the Martian"
+license = "0BSD"
+url = "https://mars.test/"
+
+[[pkg]]
+kind = "appimage"
+petal.categories = "Science;Utility"
+petal.chipset = "x86_64"
+petal.executable = "usr/bin/raygun"
+petal.icon = "raygun.png"
+dest."usr/bin" = ".crit/bin/raygun-0.0.1/x86_64-unknown-linux-musl"
+
+[[pkg]]
+kind = "appimage"
+petal.categories = "Science;Utility"
+petal.chipset = "aarch64"
+petal.executable = "usr/bin/raygun"
+petal.icon = "raygun.png"
+dest."usr/bin" = ".crit/bin/raygun-0.0.1/aarch64-unknown-linux-musl"
+
+[[pkg]]
+kind = "deb"
+petal.chipset = "amd64"
+# petal.dependencies = "bash"
+# petal.priority = "optional"
+dest."usr/bin" = ".crit/bin/raygun-0.0.1/x86_64-unknown-linux-musl"
+
+[[pkg]]
+kind = "deb"
+petal.chipset = "arm64"
+# petal.dependencies = "bash"
+# petal.priority = "optional"
+dest."usr/bin" = ".crit/bin/raygun-0.0.1/aarch64-unknown-linux-musl"
+
+[[pkg]]
+kind = "freebsd"
+petal.origin = "local/raygun"
+petal.chipset = "freebsd:*:amd64"
+# petal.dependencies = "bash@5,curl@8"
+# petal.prefix = "/usr/local"
+# petal.license_logic = "single"
+dest."usr/local/bin" = ".crit/bin/raygun-0.0.1/x86_64-unknown-freebsd"
+
+[[pkg]]
+kind = "freebsd"
+petal.origin = "local/raygun"
+petal.chipset = "freebsd:*:aarch64"
+# petal.dependencies = "bash@5,curl@8"
+# petal.prefix = "/usr/local"
+# petal.license_logic = "single"
+dest."usr/local/bin" = ".crit/bin/raygun-0.0.1/aarch64-unknown-freebsd"
+
+[[pkg]]
+kind = "rpm"
+petal.chipset = "x86_64"
+# petal.dependencies = "bash"
+dest."usr/bin" = ".crit/bin/raygun-0.0.1/x86_64-unknown-linux-musl"
+
+[[pkg]]
+kind = "rpm"
+petal.chipset = "aarch64"
+# petal.dependencies = "bash"
+dest."usr/bin" = ".crit/bin/raygun-0.0.1/aarch64-unknown-linux-musl"
+
+[[pkg]]
+kind = "tarball"
+petal.chipset = "amd64"
+dest."opt/raygun/bin" = ".crit/bin/raygun-0.0.1/x86_64-unknown-linux-musl"
+
+[[pkg]]
+kind = "tarball"
+petal.chipset = "arm64"
+dest."opt/raygun/bin" = ".crit/bin/raygun-0.0.1/aarch64-unknown-linux-musl"

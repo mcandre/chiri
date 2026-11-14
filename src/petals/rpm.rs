@@ -1,6 +1,7 @@
 use tempfile;
 
 use std::fs;
+use std::path;
 
 use crate::{Chiri, Pkg, error::ChiriError, petal::Petal};
 
@@ -132,16 +133,53 @@ impl Petal {
             .map_err(|e| ChiriError::IOError(e.to_string()))?;
 
         for (target, source) in dest {
-            let target2 = format!("/{target}");
-
+            let target = format!("/{target}");
+            let target = path::Path::new(&target);
+            let source = path::Path::new(&source);
             let metadata = fs::metadata(&source).map_err(|e| ChiriError::IOError(e.to_string()))?;
 
             if metadata.is_dir() {
-                rpm_pkg
-                    .with_dir(&source, &target2, |e| e)
-                    .map_err(|e| ChiriError::IOError(e.to_string()))?;
+                for entry in walkdir::WalkDir::new(source) {
+                    let entry = entry.map_err(|e| ChiriError::IOError(e.to_string()))?;
+                    let entry_pth = entry.path();
+
+                    let md = entry
+                        .metadata()
+                        .map_err(|e| ChiriError::IOError(e.to_string()))?;
+
+                    if md.is_dir() {
+                        continue;
+                    }
+
+                    if !md.is_file() {
+                        return Err(ChiriError::IOError(format!("unsupported file system file type for path: {:?}", entry_pth)));
+                    }
+
+                    let entry_adopted = target.join(
+                        entry_pth
+                            .strip_prefix(source)
+                            .map_err(|e| ChiriError::IOError(e.to_string()))?,
+                    );
+                    let entry_adopted_string = entry_adopted
+                        .components()
+                        .collect::<path::PathBuf>()
+                        .to_str()
+                        .ok_or(ChiriError::IOError(format!(
+                            "unable to process source path: {:?}",
+                            entry_adopted
+                        )))?
+                        .to_string();
+
+                    let options = rpm::FileOptions::new(&entry_adopted_string);
+                    rpm_pkg
+                        .with_file(entry_pth, options)
+                        .map_err(|e| ChiriError::IOError(e.to_string()))?;
+                }
             } else if metadata.is_file() {
-                let options = rpm::FileOptions::new(&target2);
+                let target_pth = target
+                    .to_str()
+                    .ok_or(ChiriError::IOError(format!("unable to process path: {:?}", target)))?;
+                let options = rpm::FileOptions::new(target_pth);
                 rpm_pkg
                     .with_file(&source, options)
                     .map_err(|e| ChiriError::IOError(e.to_string()))?;
