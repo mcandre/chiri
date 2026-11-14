@@ -33,7 +33,6 @@ url = "https://mars.test/"
 
 [[pkg]]
 kind = "appimage"
-# https://specifications.freedesktop.org/menu/latest/category-registry.html
 petal.categories = "Science;Utility"
 petal.chipset = "x86_64"
 petal.executable = "usr/bin/raygun"
@@ -42,7 +41,6 @@ dest."usr/bin" = "bin/linux/amd64"
 
 [[pkg]]
 kind = "appimage"
-# https://specifications.freedesktop.org/menu/latest/category-registry.html
 petal.categories = "Science;Utility"
 petal.chipset = "aarch64"
 petal.executable = "usr/bin/raygun"
