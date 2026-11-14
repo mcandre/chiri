@@ -1,0 +1,7 @@
+[advisories]
+ignore = [
+    # transitive
+    "RUSTSEC-2023-0071",
+    "RUSTSEC-2025-0144",
+    "RUSTSEC-2026-0387",
+]
