@@ -78,7 +78,6 @@ Prior art, personal plugs, and tools for developing portable applications (inclu
 * [go mod](https://go.dev/doc/modules/gomod-ref) - a crossplatform package manager for Go applications
 * [goreleaser](https://goreleaser.com/) - a crossplatform binary & package generator
 * [mcandre/crit](https://github.com/mcandre/crit) - an automated Rust multiplatform compiler
-* [mcandre/rockhopper](https://github.com/mcandre/rockhopper) - a Docker based package generator
 * [mcandre/tuco](https://github.com/mcandre/tuco) - an automated Go multiplatform compiler
 * [msitools](https://gitlab.gnome.org/GNOME/msitools) - a Linux framework for generating Windows MSI packages
 * [tree](https://en.wikipedia.org/wiki/Tree_(command)) - recursive directory browser
