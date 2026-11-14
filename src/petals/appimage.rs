@@ -8,7 +8,7 @@ use crate::{Chiri, DEFAULT_CACHE, Pkg, error::ChiriError, petal::Petal};
 
 /// appimage_runtimes_dir denotes the standard directory for caching AppImage runtimes
 pub fn appimage_runtimes_dir() -> path::PathBuf {
-    path::Path::new(DEFAULT_CACHE).join("appimage_runtimes")
+    path::Path::new(DEFAULT_CACHE).join("runtimes")
 }
 
 impl Petal {
@@ -192,6 +192,10 @@ impl Petal {
         fs::create_dir_all(&appimage_artifacts_root)
             .map_err(|e| ChiriError::IOError(e.to_string()))?;
         let artifact_filename = appimage_artifacts_root.join(basename);
+
+        if artifact_filename.exists() {
+            fs::remove_file(&artifact_filename).map_err(|e| ChiriError::IOError(e.to_string()))?;
+        }
 
         let _ = appimage::Packer::new(&appdir, &runtime)
             .write_to(artifact_filename)

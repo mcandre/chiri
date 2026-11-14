@@ -1,4 +1,4 @@
-# chiri: lightweight software package generator
+# chiri: crossplatform package generator
 
 [![Crates.io Downloads (recent)](https://img.shields.io/crates/dr/chiri?label=crate%20downloads)](https://crates.io/crates/chiri) [![docs.rs](https://img.shields.io/docsrs/chiri)](https://docs.rs/chiri/latest/chiri/) [![license](https://img.shields.io/badge/license-BSD-0)](LICENSE.md) [![Donate](https://img.shields.io/badge/%E2%99%A5-Sponsor-BF3988)](https://github.com/sponsors/mcandre)
 
@@ -20,7 +20,23 @@ Scatter packages like so many leaves on the wind.
 % chiri
 
 % tree .chiri/artifacts
-...
+.chiri/artifacts
+├── appimage
+│   ├── raygun-0.0.1-1-aarch64.AppImage
+│   └── raygun-0.0.1-1-x86_64.AppImage
+├── deb
+│   ├── raygun_0.0.1-1_amd64.deb
+│   └── raygun_0.0.1-1_arm64.deb
+├── freebsd-aarch64
+│   └── raygun-0.0.1_1.pkg
+├── freebsd-amd64
+│   └── raygun-0.0.1_1.pkg
+├── rpm
+│   ├── raygun-0.0.1-1.aarch64.rpm
+│   └── raygun-0.0.1-1.x86_64.rpm
+└── tarball
+    ├── raygun-0.0.1-1-amd64.tgz
+    └── raygun-0.0.1-1-arm64.tgz
 ```
 
 chiri is programming language agnostic. For more programming language samples, see [examples](examples).

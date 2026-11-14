@@ -1,6 +1,6 @@
 [package]
 name = "chiri"
-description = "lightweight software package generator"
+description = "crossplatform package generator"
 version = "0.0.1"
 edition = "2024"
 authors = ["Andrew Pennebaker <n4jm4@pm.me>"]
