@@ -2,7 +2,6 @@
 
 [petal]
 name = "raygun"
-identifier = "test.mars.raygun"
 version = "0.0.1"
 rev = "1"
 maintainer = "Marvin the Martian <marvin@mars.test>"

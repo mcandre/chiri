@@ -1,0 +1,62 @@
+# debug = true
+
+[petal]
+name = "raygun"
+version = "0.0.1"
+rev = "1"
+maintainer = "Marvin the Martian <marvin@mars.test>"
+manufacturer = "Mars Corp"
+summary = "Space modulator"
+description = "Illudium Q-36 explosive space modulator"
+copyright = "Copyright (C) 1948 Marvin the Martian"
+license = "0BSD"
+url = "https://mars.test/"
+
+# [dest]
+# "opt/raygun/bin" = "bin"
+
+[[pkg]]
+kind = "appimage"
+petal.categories = "Science;Utility"
+petal.chipset = "x86_64"
+petal.executable = "usr/bin/raygun"
+petal.icon = "raygun.png"
+dest."usr/bin" = "bin"
+
+[[pkg]]
+kind = "appimage"
+petal.categories = "Science;Utility"
+petal.chipset = "aarch64"
+petal.executable = "usr/bin/raygun"
+petal.icon = "raygun.png"
+dest."usr/bin" = "bin"
+
+[[pkg]]
+kind = "deb"
+# petal.chipset = "amd64"
+petal.chipset = "all"
+# petal.dependencies = "bash"
+# petal.priority = "optional"
+dest."usr/bin" = "bin"
+
+[[pkg]]
+kind = "freebsd"
+petal.origin = "local/raygun"
+# petal.chipset = "freebsd:*:amd64"
+petal.chipset = "freebsd:*"
+# petal.dependencies = "bash@: { origin: \"shells/bash\" }"
+# petal.prefix = "/usr/local"
+dest."usr/local/bin" = "bin"
+
+[[pkg]]
+kind = "rpm"
+# petal.chipset = "x86_64"
+petal.chipset = "noarch"
+# petal.dependencies = "bash@5,curl@8"
+dest."usr/bin" = "bin"
+
+[[pkg]]
+kind = "tarball"
+# petal.chipset = "amd64"
+petal.chipset = "all"
+dest."opt/raygun/bin" = "bin"

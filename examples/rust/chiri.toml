@@ -2,7 +2,6 @@
 
 [petal]
 name = "raygun"
-identifier = "test.mars.raygun"
 version = "0.0.1"
 rev = "1"
 maintainer = "Marvin the Martian <marvin@mars.test>"
@@ -47,7 +46,7 @@ dest."usr/bin" = ".crit/bin/raygun-0.0.1/aarch64-unknown-linux-musl"
 kind = "freebsd"
 petal.origin = "local/raygun"
 petal.chipset = "freebsd:*:amd64"
-# petal.dependencies = "bash@5,curl@8"
+# petal.dependencies = "bash: { origin: \"shells/bash\" }"
 # petal.prefix = "/usr/local"
 # petal.license_logic = "single"
 dest."usr/local/bin" = ".crit/bin/raygun-0.0.1/x86_64-unknown-freebsd"
@@ -56,7 +55,7 @@ dest."usr/local/bin" = ".crit/bin/raygun-0.0.1/x86_64-unknown-freebsd"
 kind = "freebsd"
 petal.origin = "local/raygun"
 petal.chipset = "freebsd:*:aarch64"
-# petal.dependencies = "bash@5,curl@8"
+# petal.dependencies = "bash: { origin: \"shells/bash\" }"
 # petal.prefix = "/usr/local"
 # petal.license_logic = "single"
 dest."usr/local/bin" = ".crit/bin/raygun-0.0.1/aarch64-unknown-freebsd"
@@ -64,13 +63,13 @@ dest."usr/local/bin" = ".crit/bin/raygun-0.0.1/aarch64-unknown-freebsd"
 [[pkg]]
 kind = "rpm"
 petal.chipset = "x86_64"
-# petal.dependencies = "bash"
+# petal.dependencies = "bash@5,curl@8"
 dest."usr/bin" = ".crit/bin/raygun-0.0.1/x86_64-unknown-linux-musl"
 
 [[pkg]]
 kind = "rpm"
 petal.chipset = "aarch64"
-# petal.dependencies = "bash"
+# petal.dependencies = "bash@5,curl@8"
 dest."usr/bin" = ".crit/bin/raygun-0.0.1/aarch64-unknown-linux-musl"
 
 [[pkg]]
