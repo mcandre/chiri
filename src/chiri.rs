@@ -11,7 +11,6 @@ fn main() {
     let mut opts: getopts::Options = getopts::Options::new();
     opts.optflag("c", "clean", "remove artifacts");
     opts.optflag("d", "debug", "enable additional logging");
-    opts.optflag("q", "quiet", "reduce logging");
     opts.optflag("h", "help", "show usage menu");
     opts.optflag("v", "version", "show version banner");
 
