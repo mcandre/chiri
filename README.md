@@ -2,7 +2,7 @@
 
 [![Crates.io Downloads (recent)](https://img.shields.io/crates/dr/chiri?label=crate%20downloads)](https://crates.io/crates/chiri) [![docs.rs](https://img.shields.io/docsrs/chiri)](https://docs.rs/chiri/latest/chiri/) [![license](https://img.shields.io/badge/license-BSD-0)](LICENSE.md) [![Donate](https://img.shields.io/badge/%E2%99%A5-Sponsor-BF3988)](https://github.com/sponsors/mcandre)
 
-![sakura bloom](chiri.webp)
+![sakura bloom](https://raw.githubusercontent.com/mcandre/chiri/main/chiri.webp)
 
 # ABOUT
 
