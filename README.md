@@ -1,6 +1,6 @@
 # chiri: crossplatform package generator
 
-[![Crate Downloads](https://badgen.net/crates/d/chiri?label=crate+downloads)](https://crates.io/crates/chiri) [![API Docs](https://badgen.net/static/docs/API/3eca2a?icon=docs.rs)](https://docs.rs/chiri/latest/chiri/) [![CI/CD](https://badgen.net/github/checks/mcandre/chiri?icon=github)](https://github.com/mcandre/chiri/actions) [![License](https://badgen.net/static/license/BSD/ab2b29)](LICENSE.md) [![AI](https://badgen.net/static/ai/Gemini|hint?color=886fbf)](AI-DECLARATION.md) [![Donate](https://badgen.net/static/sponsor/%E2%99%A5?color=bf3988)](https://github.com/sponsors/mcandre)
+[![Crate Downloads](https://badgen.net/crates/d/chiri?label=crate+downloads&icon=rust)](https://crates.io/crates/chiri) [![API Docs](https://badgen.net/static/docs/API/3eca2a?icon=docs.rs)](https://docs.rs/chiri/latest/chiri/) [![CI/CD](https://badgen.net/github/checks/mcandre/chiri?icon=github)](https://github.com/mcandre/chiri/actions) [![License](https://badgen.net/static/license/BSD/ab2b29?icon=freebsd)](LICENSE.md) [![AI](https://badgen.net/static/ai/Gemini|hint?color=886fbf&icon=google-gemini)](AI-DECLARATION.md) [![Donate](https://badgen.net/static/sponsor/%E2%99%A5?color=bf3988&icon=github)](https://github.com/sponsors/mcandre)
 
 ![sakura bloom](https://raw.githubusercontent.com/mcandre/chiri/main/chiri.webp)
 
