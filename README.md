@@ -42,6 +42,28 @@ cargo install --git https://github.com/mcandre/chiri.git
 
 * [cargo](https://doc.rust-lang.org/cargo/)
 
+## Native Toolchains & Headers
+
+### Debian
+
+```sh
+sudo apt update
+sudo apt install -y build-essential clang libacl1-dev libb2-dev libbz2-dev
+```
+
+### macOS (Homebrew)
+
+```sh
+xcode-select --install
+brew install bzip2 libb2
+```
+
+### RHEL
+
+```sh
+sudo dnf install -y @development-tools clang libacl1-devel libb2-devel libbz2-devel
+```
+
 ## Postinstall
 
 Register `~/.cargo/bin` to `PATH` environment variable.
