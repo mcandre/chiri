@@ -49,7 +49,7 @@ pub enum ChiriError {
     WalkdirError(#[from] walkdir::Error),
 
     #[error(transparent)]
-    ReqwestError(#[from] reqwest::Error),
+    UreqError(#[from] ureq::Error),
 
     #[error(transparent)]
     AppImageError(#[from] appimage::Error),

@@ -1,7 +1,7 @@
 use appimage;
 
 use std::fs;
-use std::io::Write;
+use std::io;
 use std::path;
 
 use crate::{
@@ -101,12 +101,10 @@ impl Petal {
             );
 
             eprintln!("info: caching runtime: {runtime_url}");
-            let response = reqwest::blocking::get(runtime_url)?;
-            let runtime_content_bytes = response.bytes()?;
+            let mut response = ureq::get(runtime_url).call()?;
+            let mut body = response.body_mut().as_reader();
             let mut runtime_file = fs::File::create(&runtime_pth).with_path(&runtime_pth)?;
-            runtime_file
-                .write_all(&runtime_content_bytes)
-                .with_path(&runtime_pth)?;
+            let _ = io::copy(&mut body, &mut runtime_file).with_path(&runtime_pth)?;
         }
 
         let runtime_content_bytes = fs::read(&runtime_pth).with_path(&runtime_pth)?;
