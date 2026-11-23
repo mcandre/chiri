@@ -1,6 +1,6 @@
 use hex;
 use itertools::Itertools;
-use libarchive2;
+use xarxarxar;
 use sha2::Digest;
 
 use std::collections::{BTreeMap, HashSet};
@@ -130,9 +130,9 @@ impl Petal {
         basename.push_str(".pkg");
 
         let artifact_filename = freebsd_artifacts_root.join(basename);
-        let mut pkg_archive = libarchive2::WriteArchive::new()
-            .format(libarchive2::ArchiveFormat::TarPax)
-            .compression(libarchive2::CompressionFormat::Zstd)
+        let mut pkg_archive = xarxarxar::WriteArchive::new()
+            .format(xarxarxar::ArchiveFormat::TarPax)
+            .compression(xarxarxar::CompressionFormat::Zstd)
             .open_file(artifact_filename)?;
 
         //

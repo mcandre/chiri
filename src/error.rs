@@ -43,7 +43,7 @@ pub enum ChiriError {
     TOMLParseError(#[from] toml::de::Error),
 
     #[error(transparent)]
-    LibarchiveError(#[from] libarchive2::Error),
+    LibarchiveError(#[from] xarxarxar::Error),
 
     #[error(transparent)]
     WalkdirError(#[from] walkdir::Error),

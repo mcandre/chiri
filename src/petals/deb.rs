@@ -1,4 +1,4 @@
-use libarchive2;
+use xarxarxar;
 use tempfile;
 
 use std::fs;
@@ -75,9 +75,9 @@ impl Petal {
         //
 
         let control_artifact_pth = t_pth.join("control.tar.zst");
-        let mut control_archive = libarchive2::WriteArchive::new()
-            .format(libarchive2::ArchiveFormat::TarGnu)
-            .compression(libarchive2::CompressionFormat::Zstd)
+        let mut control_archive = xarxarxar::WriteArchive::new()
+            .format(xarxarxar::ArchiveFormat::TarGnu)
+            .compression(xarxarxar::CompressionFormat::Zstd)
             .open_file(&control_artifact_pth)?;
 
         let mut control = String::from("Package: ");
@@ -127,9 +127,9 @@ impl Petal {
         //
 
         let data_artifact_pth = t_pth.join("data.tar.zst");
-        let mut data_archive = libarchive2::WriteArchive::new()
-            .format(libarchive2::ArchiveFormat::TarGnu)
-            .compression(libarchive2::CompressionFormat::Zstd)
+        let mut data_archive = xarxarxar::WriteArchive::new()
+            .format(xarxarxar::ArchiveFormat::TarGnu)
+            .compression(xarxarxar::CompressionFormat::Zstd)
             .open_file(&data_artifact_pth)?;
 
         let attributes = Attributes::default();
@@ -172,8 +172,8 @@ impl Petal {
 
         let artifact_filename = deb_artifacts_root.join(basename);
 
-        let mut deb_archive = libarchive2::WriteArchive::new()
-            .format(libarchive2::ArchiveFormat::Ar)
+        let mut deb_archive = xarxarxar::WriteArchive::new()
+            .format(xarxarxar::ArchiveFormat::Ar)
             .open_file(artifact_filename)?;
 
         deb_archive.add_file("debian-binary", b"2.0\n")?;

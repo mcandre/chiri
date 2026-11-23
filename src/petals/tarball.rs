@@ -1,4 +1,4 @@
-use libarchive2;
+use xarxarxar;
 
 use std::fs;
 use std::path;
@@ -35,9 +35,9 @@ impl Petal {
         let tarball_artifacts_root = chiri.artifacts.clone().unwrap().join("tarball");
         fs::create_dir_all(&tarball_artifacts_root).with_path(&tarball_artifacts_root)?;
         let artifact_filename = tarball_artifacts_root.join(basename);
-        let mut archive = libarchive2::WriteArchive::new()
-            .format(libarchive2::ArchiveFormat::TarPax)
-            .compression(libarchive2::CompressionFormat::Gzip)
+        let mut archive = xarxarxar::WriteArchive::new()
+            .format(xarxarxar::ArchiveFormat::TarPax)
+            .compression(xarxarxar::CompressionFormat::Gzip)
             .open_file(artifact_filename)?;
 
         //

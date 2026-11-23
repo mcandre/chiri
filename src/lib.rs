@@ -232,12 +232,12 @@ pub struct Attributes {
 }
 
 pub fn add_dir_header<T: AsRef<path::Path>>(
-    archive: &mut libarchive2::WriteArchive,
+    archive: &mut xarxarxar::WriteArchive,
     target: T,
     attributes: &Attributes,
 ) -> Result<(), ChiriError> {
-    let mut entry = libarchive2::EntryMut::new();
-    entry.set_file_type(libarchive2::FileType::Directory);
+    let mut entry = xarxarxar::EntryMut::new();
+    entry.set_file_type(xarxarxar::FileType::Directory);
     entry.set_pathname(target)?;
     entry.set_size(0i64);
     entry.set_perm(0o755u32)?;
@@ -265,18 +265,18 @@ pub fn add_dir_header<T: AsRef<path::Path>>(
 
 /// add_dir_with_root appends a directory recursively with a custom root directory.
 pub fn add_dir_with_root<S: AsRef<path::Path>, T: AsRef<path::Path>>(
-    archive: &mut libarchive2::WriteArchive,
+    archive: &mut xarxarxar::WriteArchive,
     source: S,
     target: T,
     attributes: &Attributes,
 ) -> Result<(), ChiriError> {
     let source = source.as_ref();
     let target = target.as_ref();
-    let mut disk = libarchive2::ReadDisk::new()?;
-    disk.set_behavior(libarchive2::ReadDiskFlags::NO_XATTR)?;
+    let mut disk = xarxarxar::ReadDisk::new()?;
+    disk.set_behavior(xarxarxar::ReadDiskFlags::NO_XATTR)?;
 
     // Preserve symlinks
-    disk.set_symlink_mode(libarchive2::SymlinkMode::Physical)?;
+    disk.set_symlink_mode(xarxarxar::SymlinkMode::Physical)?;
 
     // Query unames/gnames
     disk.set_standard_lookup()?;
@@ -361,7 +361,7 @@ pub fn add_dir_with_root<S: AsRef<path::Path>, T: AsRef<path::Path>>(
                             source
                         )))?,
                 );
-        let mut disk_entry2 = libarchive2::EntryMut::new();
+        let mut disk_entry2 = xarxarxar::EntryMut::new();
         disk_entry2.set_file_type(disk_entry.file_type());
         disk_entry2.set_pathname(&custom_archive_path)?;
         disk_entry2.set_nlink(disk_entry.nlink());
@@ -382,7 +382,7 @@ pub fn add_dir_with_root<S: AsRef<path::Path>, T: AsRef<path::Path>>(
         disk_entry2.set_mtime(mtime);
         archive.write_header(&disk_entry2)?;
 
-        if disk_entry.file_type() == libarchive2::FileType::RegularFile {
+        if disk_entry.file_type() == xarxarxar::FileType::RegularFile {
             let data = fs::read(&orig_pathbuf).with_path(&orig_pathbuf)?;
             archive.write_data(&data)?;
         }
@@ -393,7 +393,7 @@ pub fn add_dir_with_root<S: AsRef<path::Path>, T: AsRef<path::Path>>(
 
 /// add_file_with_root appends a file with a custom path.
 pub fn add_file_with_root<S: AsRef<path::Path>, T: AsRef<path::Path>>(
-    archive: &mut libarchive2::WriteArchive,
+    archive: &mut xarxarxar::WriteArchive,
     source: S,
     target: T,
     attributes: &Attributes,
@@ -409,7 +409,7 @@ pub fn add_file_with_root<S: AsRef<path::Path>, T: AsRef<path::Path>>(
     let mtime = attributes
         .mtime
         .unwrap_or(i64_to_systemtime(metadata.mtime())?);
-    let mut entry = libarchive2::EntryMut::new();
+    let mut entry = xarxarxar::EntryMut::new();
     entry.set_pathname(target)?;
     entry.set_nlink(1u32);
     entry.set_file_type(std_filetype_to_libarchive(metadata.file_type()));
@@ -436,20 +436,20 @@ pub fn add_file_with_root<S: AsRef<path::Path>, T: AsRef<path::Path>>(
 }
 
 /// std_filetype_to_libarchive converts a standard FileType to a libarchive representation.
-pub fn std_filetype_to_libarchive(ft: std::fs::FileType) -> libarchive2::FileType {
+pub fn std_filetype_to_libarchive(ft: std::fs::FileType) -> xarxarxar::FileType {
     if ft.is_dir() {
-        return libarchive2::FileType::Directory;
+        return xarxarxar::FileType::Directory;
     }
 
     if ft.is_file() {
-        return libarchive2::FileType::RegularFile;
+        return xarxarxar::FileType::RegularFile;
     }
 
     if ft.is_symlink() {
-        return libarchive2::FileType::SymbolicLink;
+        return xarxarxar::FileType::SymbolicLink;
     }
 
-    libarchive2::FileType::Unknown
+    xarxarxar::FileType::Unknown
 }
 
 /// i64_to_systemtime converts UNIX epochs to SystemTime.

@@ -1,4 +1,4 @@
-use libarchive2;
+use xarxarxar;
 use tempfile;
 
 use std::fs;
@@ -138,10 +138,10 @@ impl Petal {
         //
 
         let payload_filename = base_pkg_dir.join("Payload");
-        let mut payload_archive = libarchive2::WriteArchive::new()
-            .format(libarchive2::ArchiveFormat::CpioOdc)
-            .compression(libarchive2::CompressionFormat::None)
-            .compression(libarchive2::CompressionFormat::Gzip)
+        let mut payload_archive = xarxarxar::WriteArchive::new()
+            .format(xarxarxar::ArchiveFormat::CpioOdc)
+            .compression(xarxarxar::CompressionFormat::None)
+            .compression(xarxarxar::CompressionFormat::Gzip)
             .open_file(&payload_filename)?;
 
         let payload_attributes = Attributes {
@@ -326,10 +326,10 @@ impl Petal {
         };
 
         let artifact_filename = pkg_artifacts_root.join(basename);
-        let pkg_builder = libarchive2::WriteArchive::new()
-            .format(libarchive2::ArchiveFormat::Xar)
-            .compression(libarchive2::CompressionFormat::None)
-            .format_option(libarchive2::FormatOption::XarCompressionNone);
+        let pkg_builder = xarxarxar::WriteArchive::new()
+            .format(xarxarxar::ArchiveFormat::Xar)
+            .compression(xarxarxar::CompressionFormat::None)
+            .format_option(xarxarxar::FormatOption::XarCompressionNone);
         let mut pkg_archive = pkg_builder.open_file(artifact_filename)?;
         add_dir_header(&mut pkg_archive, "base.pkg", &spec_attributes)?;
         add_file_with_root(

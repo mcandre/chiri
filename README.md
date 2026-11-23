@@ -1,6 +1,6 @@
 # chiri: crossplatform package generator
 
-[![CI/CD](https://badgen.net/github/checks/mcandre/chiri?icon=github)](https://github.com/mcandre/chiri/actions) [![License](https://badgen.net/static/license/BSD/ab2b29?icon=freebsd)](LICENSE.md) [![AI](https://badgen.net/static/ai/Gemini|hint?color=886fbf&icon=google-gemini)](AI-DECLARATION.md) [![Donate](https://badgen.net/static/sponsor/%E2%99%A5?color=bf3988&icon=github)](https://github.com/sponsors/mcandre)
+[![Crate Downloads](https://badgen.net/crates/d/chiri?label=crate+downloads&icon=rust)](https://crates.io/crates/chiri) [![API Docs](https://badgen.net/static/docs/API/3eca2a?icon=docs.rs)](https://docs.rs/chiri/latest/chiri/) [![CI/CD](https://badgen.net/github/checks/mcandre/chiri?icon=github)](https://github.com/mcandre/chiri/actions) [![License](https://badgen.net/static/license/BSD/ab2b29?icon=freebsd)](LICENSE.md) [![AI](https://badgen.net/static/ai/Gemini|hint?color=886fbf&icon=google-gemini)](AI-DECLARATION.md) [![Donate](https://badgen.net/static/sponsor/%E2%99%A5?color=bf3988&icon=github)](https://github.com/sponsors/mcandre)
 
 ![sakura bloom](https://raw.githubusercontent.com/mcandre/chiri/main/chiri.webp)
 
@@ -35,34 +35,14 @@ chiri is programming language agnostic. For more programming language samples, s
 # DOWNLOAD
 
 ```sh
-cargo install --git https://github.com/mcandre/chiri.git
+cargo install chiri
 ```
 
 ## Prerequisites
 
 * [cargo](https://doc.rust-lang.org/cargo/)
 
-## Native Toolchains & Headers
-
-### Debian
-
-```sh
-sudo apt update
-sudo apt install -y build-essential clang libacl1-dev libb2-dev libbz2-dev
-```
-
-### macOS (Homebrew)
-
-```sh
-xcode-select --install
-brew install bzip2 libb2
-```
-
-### RHEL
-
-```sh
-sudo dnf install -y @development-tools clang libacl1-devel libb2-devel libbz2-devel
-```
+For details on provisioning C/C++ components, see [NATIVE](NATIVE.md).
 
 ## Postinstall
 
