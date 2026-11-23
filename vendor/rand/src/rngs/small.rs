@@ -8,8 +8,7 @@
 
 //! A small fast RNG
 
-use core::convert::Infallible;
-use rand_core::{SeedableRng, TryRng};
+use rand_core::{RngCore, SeedableRng};
 
 #[cfg(any(target_pointer_width = "32", target_pointer_width = "16"))]
 type Rng = super::xoshiro128plusplus::Xoshiro128PlusPlus;
@@ -41,11 +40,19 @@ type Rng = super::xoshiro256plusplus::Xoshiro256PlusPlus;
 /// suitable for seeding, but note that, even with a fixed seed, output is not
 /// [portable]. Some suggestions:
 ///
-/// 1.  To automatically seed with a unique seed, use [`rand::make_rng()`]:
+/// 1.  To automatically seed with a unique seed, use [`SeedableRng::from_rng`]:
 ///     ```
+///     use rand::SeedableRng;
 ///     use rand::rngs::SmallRng;
-///     let mut rng: SmallRng = rand::make_rng();
-///     # let _ = rand::Rng::next_u32(&mut rng);
+///     let rng = SmallRng::from_rng(&mut rand::rng());
+///     # let _: SmallRng = rng;
+///     ```
+///     or [`SeedableRng::from_os_rng`]:
+///     ```
+///     # use rand::SeedableRng;
+///     # use rand::rngs::SmallRng;
+///     let rng = SmallRng::from_os_rng();
+///     # let _: SmallRng = rng;
 ///     ```
 /// 2.  To use a deterministic integral seed, use `seed_from_u64`. This uses a
 ///     hash function internally to yield a (typically) good seed from any
@@ -61,7 +68,7 @@ type Rng = super::xoshiro256plusplus::Xoshiro256PlusPlus;
 ///
 /// ## Generation
 ///
-/// The generator implements [`Rng`] and thus also [`RngExt`].
+/// The generators implements [`RngCore`] and thus also [`Rng`][crate::Rng].
 /// See also the [Random Values] chapter in the book.
 ///
 /// [portable]: https://rust-random.github.io/book/crate-reprod.html
@@ -71,10 +78,8 @@ type Rng = super::xoshiro256plusplus::Xoshiro256PlusPlus;
 /// [`StdRng`]: crate::rngs::StdRng
 /// [rand_pcg]: https://crates.io/crates/rand_pcg
 /// [rand_xoshiro]: https://crates.io/crates/rand_xoshiro
+/// [`rand_chacha::ChaCha8Rng`]: https://docs.rs/rand_chacha/latest/rand_chacha/struct.ChaCha8Rng.html
 /// [`rand_seeder`]: https://docs.rs/rand_seeder/latest/rand_seeder/
-/// [`Rng`]: rand_core::Rng
-/// [`RngExt`]: crate::RngExt
-/// [`rand::make_rng()`]: crate::make_rng
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct SmallRng(Rng);
 
@@ -97,21 +102,19 @@ impl SeedableRng for SmallRng {
     }
 }
 
-impl TryRng for SmallRng {
-    type Error = Infallible;
-
+impl RngCore for SmallRng {
     #[inline(always)]
-    fn try_next_u32(&mut self) -> Result<u32, Infallible> {
-        self.0.try_next_u32()
+    fn next_u32(&mut self) -> u32 {
+        self.0.next_u32()
     }
 
     #[inline(always)]
-    fn try_next_u64(&mut self) -> Result<u64, Infallible> {
-        self.0.try_next_u64()
+    fn next_u64(&mut self) -> u64 {
+        self.0.next_u64()
     }
 
     #[inline(always)]
-    fn try_fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), Infallible> {
-        self.0.try_fill_bytes(dest)
+    fn fill_bytes(&mut self, dest: &mut [u8]) {
+        self.0.fill_bytes(dest)
     }
 }

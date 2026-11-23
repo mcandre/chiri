@@ -6,8 +6,9 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use core::convert::Infallible;
-use rand_core::{SeedableRng, TryRng, utils};
+use rand_core::impls::fill_bytes_via_next;
+use rand_core::le::read_u64_into;
+use rand_core::{RngCore, SeedableRng};
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
@@ -32,9 +33,10 @@ impl SeedableRng for Xoshiro256PlusPlus {
     /// mapped to a different seed.
     #[inline]
     fn from_seed(seed: [u8; 32]) -> Xoshiro256PlusPlus {
-        let state = utils::read_words(&seed);
+        let mut state = [0; 4];
+        read_u64_into(&seed, &mut state);
         // Check for zero on aligned integers for better code generation.
-        // Furthermore, seed_from_u64(0) will expand to a constant when optimized.
+        // Furtermore, seed_from_u64(0) will expand to a constant when optimized.
         if state.iter().all(|&x| x == 0) {
             return Self::seed_from_u64(0);
         }
@@ -63,18 +65,17 @@ impl SeedableRng for Xoshiro256PlusPlus {
     }
 }
 
-impl TryRng for Xoshiro256PlusPlus {
-    type Error = Infallible;
-
+impl RngCore for Xoshiro256PlusPlus {
     #[inline]
-    fn try_next_u32(&mut self) -> Result<u32, Infallible> {
+    fn next_u32(&mut self) -> u32 {
         // The lowest bits have some linear dependencies, so we use the
         // upper bits instead.
-        self.try_next_u64().map(|val| (val >> 32) as u32)
+        let val = self.next_u64();
+        (val >> 32) as u32
     }
 
     #[inline]
-    fn try_next_u64(&mut self) -> Result<u64, Infallible> {
+    fn next_u64(&mut self) -> u64 {
         let res = self.s[0]
             .wrapping_add(self.s[3])
             .rotate_left(23)
@@ -91,19 +92,19 @@ impl TryRng for Xoshiro256PlusPlus {
 
         self.s[3] = self.s[3].rotate_left(45);
 
-        Ok(res)
+        res
     }
 
     #[inline]
-    fn try_fill_bytes(&mut self, dst: &mut [u8]) -> Result<(), Infallible> {
-        utils::fill_bytes_via_next_word(dst, || self.try_next_u64())
+    fn fill_bytes(&mut self, dst: &mut [u8]) {
+        fill_bytes_via_next(self, dst)
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::Xoshiro256PlusPlus;
-    use rand_core::{Rng, SeedableRng};
+    use rand_core::{RngCore, SeedableRng};
 
     #[test]
     fn reference() {

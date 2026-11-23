@@ -17,12 +17,12 @@ use core::num::Wrapping;
 #[cfg(feature = "alloc")]
 use crate::distr::SampleString;
 use crate::distr::{Distribution, StandardUniform, Uniform};
-use crate::{Rng, RngExt};
+use crate::Rng;
 
 #[cfg(feature = "simd_support")]
-use core::simd::MaskElement;
-#[cfg(feature = "simd_support")]
 use core::simd::prelude::*;
+#[cfg(feature = "simd_support")]
+use core::simd::{LaneCount, MaskElement, SupportedLaneCount};
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
@@ -34,7 +34,7 @@ use serde::{Deserialize, Serialize};
 /// # Example
 ///
 /// ```
-/// use rand::RngExt;
+/// use rand::Rng;
 /// use rand::distr::Alphanumeric;
 ///
 /// let mut rng = rand::rng();
@@ -79,7 +79,7 @@ pub struct Alphanumeric;
 /// [`SampleString::sample_string`] method like so:
 ///
 /// ```
-/// use rand::RngExt;
+/// use rand::Rng;
 /// use rand::distr::{Alphabetic, SampleString};
 ///
 /// // Manual mapping
@@ -234,6 +234,7 @@ impl Distribution<bool> for StandardUniform {
 impl<T, const LANES: usize> Distribution<Mask<T, LANES>> for StandardUniform
 where
     T: MaskElement + Default,
+    LaneCount<LANES>: SupportedLaneCount,
     StandardUniform: Distribution<Simd<T, LANES>>,
     Simd<T, LANES>: SimdPartialOrd<Mask = Mask<T, LANES>>,
 {
@@ -314,11 +315,11 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::Rng;
+    use crate::RngCore;
 
     #[test]
     fn test_misc() {
-        let rng: &mut dyn Rng = &mut crate::test::rng(820);
+        let rng: &mut dyn RngCore = &mut crate::test::rng(820);
 
         rng.sample::<char, _>(StandardUniform);
         rng.sample::<bool, _>(StandardUniform);

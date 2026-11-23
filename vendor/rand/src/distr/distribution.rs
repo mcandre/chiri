@@ -14,13 +14,10 @@ use crate::Rng;
 use alloc::string::String;
 use core::iter;
 
-#[cfg(doc)]
-use crate::RngExt;
-
 /// Types (distributions) that can be used to create a random instance of `T`.
 ///
 /// It is possible to sample from a distribution through both the
-/// `Distribution` and [`RngExt`] traits, via `distr.sample(&mut rng)` and
+/// `Distribution` and [`Rng`] traits, via `distr.sample(&mut rng)` and
 /// `rng.sample(distr)`. They also both offer the [`sample_iter`] method, which
 /// produces an iterator that samples from the distribution.
 ///
@@ -122,7 +119,7 @@ impl<T, D: Distribution<T> + ?Sized> Distribution<T> for &D {
 /// from a random generator of type `R`.
 ///
 /// Construct this `struct` using [`Distribution::sample_iter`] or
-/// [`RngExt::sample_iter`]. It is also used by [`RngExt::random_iter`] and
+/// [`Rng::sample_iter`]. It is also used by [`Rng::random_iter`] and
 /// [`crate::random_iter`].
 #[derive(Debug)]
 pub struct Iter<D, R, T> {
@@ -206,8 +203,8 @@ pub trait SampleString {
 
 #[cfg(test)]
 mod tests {
-    use crate::Rng;
     use crate::distr::{Distribution, Uniform};
+    use crate::Rng;
 
     #[test]
     fn test_distributions_iter() {

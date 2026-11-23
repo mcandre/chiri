@@ -9,7 +9,7 @@
 //! The implementations of the `StandardUniform` distribution for integer types.
 
 use crate::distr::{Distribution, StandardUniform};
-use crate::{Rng, RngExt};
+use crate::Rng;
 #[cfg(all(target_arch = "x86", feature = "simd_support"))]
 use core::arch::x86::__m512i;
 #[cfg(target_arch = "x86")]
@@ -19,8 +19,8 @@ use core::arch::x86_64::__m512i;
 #[cfg(target_arch = "x86_64")]
 use core::arch::x86_64::{__m128i, __m256i};
 use core::num::{
-    NonZeroI8, NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI128, NonZeroU8, NonZeroU16, NonZeroU32,
-    NonZeroU64, NonZeroU128,
+    NonZeroI128, NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8, NonZeroU128, NonZeroU16,
+    NonZeroU32, NonZeroU64, NonZeroU8,
 };
 #[cfg(feature = "simd_support")]
 use core::simd::*;
@@ -112,7 +112,8 @@ impl Distribution<__m128i> for StandardUniform {
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> __m128i {
         // NOTE: It's tempting to use the u128 impl here, but confusingly this
         // results in different code (return via rdx, r10 instead of rax, rdx
-        // with u128 impl) and is much slower (+130 time).
+        // with u128 impl) and is much slower (+130 time). This version calls
+        // impls::fill_bytes_via_next but performs well.
 
         let mut buf = [0_u8; core::mem::size_of::<__m128i>()];
         rng.fill_bytes(&mut buf);
@@ -159,7 +160,10 @@ macro_rules! simd_impl {
         ///
         /// [`simd_support`]: https://github.com/rust-random/rand#crate-features
         #[cfg(feature = "simd_support")]
-        impl<const LANES: usize> Distribution<Simd<$ty, LANES>> for StandardUniform {
+        impl<const LANES: usize> Distribution<Simd<$ty, LANES>> for StandardUniform
+        where
+            LaneCount<LANES>: SupportedLaneCount,
+        {
             #[inline]
             fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Simd<$ty, LANES> {
                 let mut vec = Simd::default();

@@ -28,9 +28,6 @@ pub trait Weight: Clone {
 
     /// Checked addition
     ///
-    /// Note that for floating-point formats with a representation of infinity,
-    /// overflow-to-infinity is not considered an error.
-    ///
     /// -   `Result::Ok`: On success, `v` is added to `self`
     /// -   `Result::Err`: Returns an error when `Self` cannot represent the
     ///     result of `self + v` (i.e. overflow). The value of `self` should be
@@ -103,7 +100,8 @@ pub enum Error {
     Overflow,
 }
 
-impl core::error::Error for Error {}
+#[cfg(feature = "std")]
+impl std::error::Error for Error {}
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
