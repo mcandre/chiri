@@ -35,7 +35,7 @@ chiri is programming language agnostic. For more programming language samples, s
 # DOWNLOAD
 
 ```sh
-cargo install chiri
+cargo install --git https://github.com/mcandre/chiri.git
 ```
 
 ## Prerequisites
