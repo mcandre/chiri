@@ -5,7 +5,7 @@ use std::fs;
 use std::path;
 
 use crate::{
-    Chiri, Pkg, add_dir_with_root, add_file_with_root,
+    Attributes, Chiri, Pkg, add_dir_with_root, add_file_with_root,
     error::{ChiriError, ResultExt},
     petal::Petal,
 };
@@ -132,15 +132,17 @@ impl Petal {
             .compression(libarchive2::CompressionFormat::Zstd)
             .open_file(&data_artifact_pth)?;
 
+        let attributes = Attributes::default();
+
         for (target, source) in dest {
             let metadata = fs::metadata(&source).with_path(&source)?;
             let source_pth = path::Path::new(&source);
             let target_pth = path::Path::new(&target);
 
             if metadata.is_dir() {
-                add_dir_with_root(&mut data_archive, source_pth, target_pth)?;
+                add_dir_with_root(&mut data_archive, source_pth, target_pth, &attributes)?;
             } else {
-                add_file_with_root(&mut data_archive, source_pth, target_pth)?;
+                add_file_with_root(&mut data_archive, source_pth, target_pth, &attributes)?;
             }
         }
 
@@ -180,12 +182,14 @@ impl Petal {
             &mut deb_archive,
             control_artifact_pth,
             path::Path::new("control.tar.zst"),
+            &attributes,
         )?;
 
         add_file_with_root(
             &mut deb_archive,
             data_artifact_pth,
             path::Path::new("data.tar.zst"),
+            &attributes,
         )?;
 
         deb_archive.finish()?;

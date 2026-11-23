@@ -22,6 +22,9 @@ pub enum Petal {
     /// FreeBSD builds FreeBSD family packages.
     FreeBSD,
 
+    /// MacOS builds macOS packages.
+    MacOS,
+
     /// Rpm builds RHEL family packages.
     Rpm,
 }
@@ -38,6 +41,7 @@ impl Petal {
             Petal::AppImage => self.emit_appimage(pkg, chiri),
             Petal::Deb => self.emit_deb(pkg, chiri),
             Petal::FreeBSD => self.emit_freebsd(pkg, chiri),
+            Petal::MacOS => self.emit_macos(pkg, chiri),
             Petal::Rpm => self.emit_rpm(pkg, chiri),
             Petal::Tarball => self.emit_tarball(pkg, chiri),
         }

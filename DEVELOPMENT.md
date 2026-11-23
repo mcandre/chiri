@@ -12,19 +12,24 @@ For advanced operations, such as linting, we further supplement with some softwa
 * [Rust](https://www.rust-lang.org/en-US/)
 * Provision additional dev tools with `make -f install.mk`
 
-## Native Headers
+## Native Toolchain & Headers
 
 ### Debian
 
+* build-essential
+* clang
 * libacl1-dev
 * libbz2-dev
 
 ### macOS (Homebrew)
 
+* Xcode
 * bzip2
 
 ### RHEL
 
+* @development-tools
+* clang
 * libacl1-devel
 * libbz2-devel
 

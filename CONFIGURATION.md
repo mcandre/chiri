@@ -283,6 +283,9 @@ petal.chipset = "amd64"
 | FreeBSD        | 64-bit ARM            | `freebsd:<os-version>:aarch64`     |
 | FreeBSD        | 64-bit Intel          | `freebsd:<os-version>:amd64`       |
 | FreeBSD        | (chipset independent) | `freebsd:<os-version>:*`           |
+| macOS          | 64-bit ARM            | `arm64`                            |
+| macOS          | 64-bit Intel          | `x86_64`                           |
+| macOS          | (chipset independent) | `universal`                        |
 | Rpm            | 64-bit ARM            | `aarch64`                          |
 | Rpm            | 64-bit Intel          | `x86_64`                           |
 | Rpm            | (chipset indepdendet) | `noarch`                           |

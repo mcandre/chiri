@@ -27,8 +27,6 @@ Scatter packages like so many leaves on the wind.
 ├── deb
 │   ├── raygun_0.0.1-1_amd64.deb
 │   └── raygun_0.0.1-1_arm64.deb
-├── freebsd-aarch64
-│   └── raygun-0.0.1_1.pkg
 ...
 ```
 
@@ -59,6 +57,7 @@ For details on building from source, see [DEVELOPMENT](DEVELOPMENT.md).
 * AppImage
 * DEB
 * FreeBSD
+* macOS
 * RPM
 * Tarball
 

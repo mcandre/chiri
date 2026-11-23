@@ -13,6 +13,7 @@ use std::os::unix::fs::MetadataExt;
 use std::path;
 use std::time;
 
+pub mod bom;
 pub mod error;
 pub mod petal;
 pub mod petals;
@@ -205,11 +206,69 @@ impl Chiri {
     }
 }
 
+/// Attributes models file metadata.
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+pub struct Attributes {
+    /// uid denotes a user ID.
+    pub uid: Option<u32>,
+
+    /// gid denotes a group ID.
+    pub gid: Option<u32>,
+
+    /// uname denotes a user name.
+    pub uname: Option<String>,
+
+    /// gname denotes a group name.
+    pub gname: Option<String>,
+
+    /// atime denotes an access timestamp.
+    pub atime: Option<time::SystemTime>,
+
+    /// mtime dentoes a modification timestamp.
+    pub mtime: Option<time::SystemTime>,
+
+    /// nlink denotes CPIO nlink counters.
+    pub nlink: Option<u32>,
+}
+
+pub fn add_dir_header<T: AsRef<path::Path>>(
+    archive: &mut libarchive2::WriteArchive,
+    target: T,
+    attributes: &Attributes,
+) -> Result<(), ChiriError> {
+    let mut entry = libarchive2::EntryMut::new();
+    entry.set_file_type(libarchive2::FileType::Directory);
+    entry.set_pathname(target)?;
+    entry.set_size(0i64);
+    entry.set_perm(0o755u32)?;
+    entry.set_uid(attributes.uid.unwrap_or(0u32).into());
+    entry.set_gid(attributes.gid.unwrap_or(0u32).into());
+    entry.set_uname(&attributes.uname.clone().unwrap_or(String::from("root")))?;
+    entry.set_gname(&attributes.gname.clone().unwrap_or(String::from("wheel")))?;
+
+    if let Some(atime) = attributes.atime {
+        entry.set_atime(atime);
+    }
+
+    if let Some(mtime) = attributes.mtime {
+        entry.set_mtime(mtime);
+    }
+
+    if let Some(nlink) = attributes.nlink {
+        entry.set_nlink(nlink);
+    }
+
+    archive.write_header(&entry)?;
+
+    Ok(())
+}
+
 /// add_dir_with_root appends a directory recursively with a custom root directory.
 pub fn add_dir_with_root<S: AsRef<path::Path>, T: AsRef<path::Path>>(
     archive: &mut libarchive2::WriteArchive,
     source: S,
     target: T,
+    attributes: &Attributes,
 ) -> Result<(), ChiriError> {
     let source = source.as_ref();
     let target = target.as_ref();
@@ -254,16 +313,73 @@ pub fn add_dir_with_root<S: AsRef<path::Path>, T: AsRef<path::Path>>(
         //
         // Strip libarchive creation header
         //
+
+        let uid = attributes.uid.unwrap_or(
+            disk_entry
+                .uid()
+                .ok_or(ChiriError::ValidationError(format!(
+                    "invalid uid: {:?}",
+                    source
+                )))?
+                .try_into()
+                .map_err(|_| {
+                    ChiriError::ValidationError(format!("invalid u32 uid: {:?}", source))
+                })?,
+        );
+        let gid = attributes.gid.unwrap_or(
+            disk_entry
+                .gid()
+                .ok_or(ChiriError::ValidationError(format!(
+                    "invalid gid: {:?}",
+                    source
+                )))?
+                .try_into()
+                .map_err(|_| {
+                    ChiriError::ValidationError(format!("invalid u32 gid: {:?}", source))
+                })?,
+        );
+
+        let atime =
+            attributes
+                .atime
+                .unwrap_or(
+                    disk_entry
+                        .atime()
+                        .ok_or(ChiriError::ValidationError(format!(
+                            "invalid atime: {:?}",
+                            source
+                        )))?,
+                );
+        let mtime =
+            attributes
+                .mtime
+                .unwrap_or(
+                    disk_entry
+                        .mtime()
+                        .ok_or(ChiriError::ValidationError(format!(
+                            "invalid mtime: {:?}",
+                            source
+                        )))?,
+                );
         let mut disk_entry2 = libarchive2::EntryMut::new();
         disk_entry2.set_file_type(disk_entry.file_type());
         disk_entry2.set_pathname(&custom_archive_path)?;
+        disk_entry2.set_nlink(disk_entry.nlink());
         disk_entry2.set_size(disk_entry.size());
         disk_entry2.set_perm(disk_entry.mode())?;
-        disk_entry2.set_uid(disk_entry.uid().unwrap_or(0u64));
-        disk_entry2.set_gid(disk_entry.gid().unwrap_or(0u64));
-        disk_entry2.set_atime(disk_entry.atime().unwrap_or(time::SystemTime::UNIX_EPOCH));
-        disk_entry2.set_mtime(disk_entry.mtime().unwrap_or(time::SystemTime::UNIX_EPOCH));
+        disk_entry2.set_uid(uid.into());
+        disk_entry2.set_gid(gid.into());
 
+        if let Some(uname) = attributes.uname.clone() {
+            disk_entry2.set_uname(&uname)?;
+        }
+
+        if let Some(gname) = attributes.gname.clone() {
+            disk_entry2.set_gname(&gname)?;
+        }
+
+        disk_entry2.set_atime(atime);
+        disk_entry2.set_mtime(mtime);
         archive.write_header(&disk_entry2)?;
 
         if disk_entry.file_type() == libarchive2::FileType::RegularFile {
@@ -280,21 +396,38 @@ pub fn add_file_with_root<S: AsRef<path::Path>, T: AsRef<path::Path>>(
     archive: &mut libarchive2::WriteArchive,
     source: S,
     target: T,
+    attributes: &Attributes,
 ) -> Result<(), ChiriError> {
     let source = source.as_ref();
     let target = target.as_ref();
-
     let metadata = fs::metadata(source).with_path(source)?;
-
+    let uid = attributes.uid.unwrap_or(metadata.uid());
+    let gid = attributes.gid.unwrap_or(metadata.gid());
+    let atime = attributes
+        .atime
+        .unwrap_or(i64_to_systemtime(metadata.atime())?);
+    let mtime = attributes
+        .mtime
+        .unwrap_or(i64_to_systemtime(metadata.mtime())?);
     let mut entry = libarchive2::EntryMut::new();
     entry.set_pathname(target)?;
+    entry.set_nlink(1u32);
     entry.set_file_type(std_filetype_to_libarchive(metadata.file_type()));
     entry.set_size(metadata.len() as i64);
     entry.set_perm(metadata.mode())?;
-    entry.set_uid(metadata.uid() as u64);
-    entry.set_gid(metadata.gid() as u64);
-    entry.set_atime(i64_to_systemtime(metadata.atime())?);
-    entry.set_mtime(i64_to_systemtime(metadata.mtime())?);
+    entry.set_uid(uid.into());
+    entry.set_gid(gid.into());
+
+    if let Some(uname) = attributes.uname.clone() {
+        entry.set_uname(&uname)?;
+    }
+
+    if let Some(gname) = attributes.gname.clone() {
+        entry.set_gname(&gname)?;
+    }
+
+    entry.set_atime(atime);
+    entry.set_mtime(mtime);
     archive.write_header(&entry)?;
     let data = fs::read(source).with_path(source)?;
     let _ = archive.write_data(&data)?;
@@ -342,7 +475,7 @@ pub fn recursive_file_size_bytes<P: AsRef<path::Path>>(pth: P) -> Result<u64, Ch
     if metadata.is_dir() {
         let mut size_b = 0u64;
 
-        for entry in walkdir::WalkDir::new(p) {
+        for entry in walkdir::WalkDir::new(p).sort_by_file_name() {
             let entry = entry?;
             let md = entry.metadata()?;
             size_b += md.len();

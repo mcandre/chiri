@@ -8,7 +8,7 @@ use std::fs;
 use std::path;
 
 use crate::{
-    Chiri, Pkg, add_dir_with_root, add_file_with_root,
+    Attributes, Chiri, Pkg, add_dir_with_root, add_file_with_root,
     error::{ChiriError, ResultExt},
     petal::Petal,
     recursive_file_size_bytes,
@@ -200,7 +200,7 @@ impl Petal {
                 continue;
             }
 
-            for entry in walkdir::WalkDir::new(source) {
+            for entry in walkdir::WalkDir::new(source).sort_by_file_name() {
                 let entry = entry?;
                 let md = entry.metadata()?;
 
@@ -213,15 +213,15 @@ impl Petal {
                     .to_str()
                     .ok_or(ChiriError::UnrenderablePathError(source.to_path_buf()))?;
                 let entry_pth_relative = entry_pth.strip_prefix(source_str)?;
-                let entry_adopted = target.join(entry_pth_relative);
-                let entry_adopted_string = entry_adopted
+                let entry_adoptee = target.join(entry_pth_relative);
+                let entry_adoptee_string = entry_adoptee
                     .components()
                     .collect::<path::PathBuf>()
                     .to_str()
-                    .ok_or(ChiriError::UnrenderablePathError(entry_adopted))?
+                    .ok_or(ChiriError::UnrenderablePathError(entry_adoptee))?
                     .to_string();
 
-                directories_set.insert(entry_adopted_string);
+                directories_set.insert(entry_adoptee_string);
             }
         }
 
@@ -242,7 +242,7 @@ impl Petal {
             let metadata = source.metadata().with_path(source)?;
 
             if metadata.is_dir() {
-                for entry in walkdir::WalkDir::new(source) {
+                for entry in walkdir::WalkDir::new(source).sort_by_file_name() {
                     let entry = entry?;
                     let md = entry.metadata()?;
 
@@ -302,15 +302,17 @@ impl Petal {
 
         pkg_archive.add_file("+MANIFEST", manifest.as_bytes())?;
 
+        let attributes = Attributes::default();
+
         for (target, source) in dest {
             let target_pth = path::Path::new(&target);
             let source_pth = path::Path::new(&source);
             let metadata = fs::metadata(&source).with_path(&source)?;
 
             if metadata.is_dir() {
-                add_dir_with_root(&mut pkg_archive, source_pth, target_pth)?;
+                add_dir_with_root(&mut pkg_archive, source_pth, target_pth, &attributes)?;
             } else {
-                add_file_with_root(&mut pkg_archive, source_pth, target_pth)?;
+                add_file_with_root(&mut pkg_archive, source_pth, target_pth, &attributes)?;
             }
         }
 

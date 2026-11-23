@@ -2,6 +2,7 @@
 
 [petal]
 name = "raygun"
+identifier = "test.mars.raygun"
 version = "0.0.1"
 rev = "1"
 maintainer = "Marvin the Martian <marvin@mars.test>"
@@ -59,6 +60,36 @@ petal.chipset = "freebsd:*:aarch64"
 # petal.prefix = "/usr/local"
 # petal.license_logic = "single"
 dest."usr/local/bin" = ".crit/bin/raygun-0.0.1/aarch64-unknown-freebsd"
+
+[[pkg]]
+kind = "macos"
+petal.chipset = "x86_64"
+#
+# petal.uid = "501"
+# petal.gid = "20"
+# petal.gname = "staff"
+# dest."Applications/raygun.app" = "raygun.app"
+#
+# petal.uid = "0"
+# petal.gid = "0"
+# petal.uname = "root"
+# petal.gname = "wheel"
+dest."usr/local/bin" = ".crit/bin/raygun-0.0.1/x86_64-apple-darwin"
+
+[[pkg]]
+kind = "macos"
+petal.chipset = "arm64"
+#
+# petal.uid = "501"
+# petal.gid = "20"
+# petal.gname = "staff"
+# dest."Applications/raygun.app" = "raygun.app"
+#
+# petal.uid = "0"
+# petal.gid = "0"
+# petal.uname = "root"
+# petal.gname = "wheel"
+dest."usr/local/bin" = ".crit/bin/raygun-0.0.1/aarch64-apple-darwin"
 
 [[pkg]]
 kind = "rpm"

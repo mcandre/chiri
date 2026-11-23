@@ -6,6 +6,8 @@ use std::io;
 use std::path;
 use std::process;
 
+use crate::bom;
+
 /// ChiriError models unsuccessful program states.
 #[derive(Error, Debug)]
 pub enum ChiriError {
@@ -18,11 +20,21 @@ pub enum ChiriError {
     #[error("unsupported file system file type: {0}")]
     UnsupportedFileSystemFileTypeError(path::PathBuf),
 
+    #[error("copy error: {source}: origin: {origin}, destination: {destination}")]
+    CopyError {
+        source: io::Error,
+        origin: path::PathBuf,
+        destination: path::PathBuf,
+    },
+
     #[error("{source}: {path}")]
     IOError {
         source: io::Error,
         path: path::PathBuf,
     },
+
+    #[error("unable to lookup parent of path: {0}")]
+    ParentLookupError(path::PathBuf),
 
     #[error(transparent)]
     StripPrefixError(#[from] path::StripPrefixError),
@@ -44,6 +56,9 @@ pub enum ChiriError {
 
     #[error(transparent)]
     RPMError(#[from] rpm::Error),
+
+    #[error(transparent)]
+    BomError(#[from] bom::Error),
 }
 
 pub trait ResultExt<T> {

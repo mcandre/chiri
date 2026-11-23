@@ -2,6 +2,7 @@
 
 [petal]
 name = "raygun"
+identifier = "test.mars.raygun"
 version = "0.0.1"
 rev = "1"
 maintainer = "Marvin the Martian <marvin@mars.test>"
@@ -46,6 +47,21 @@ petal.origin = "local/raygun"
 petal.chipset = "freebsd:*"
 # petal.dependencies = "bash@: { origin: \"shells/bash\" }"
 # petal.prefix = "/usr/local"
+dest."usr/local/bin" = "bin"
+
+[[pkg]]
+kind = "macos"
+petal.chipset = "universal"
+#
+# petal.uid = "501"
+# petal.gid = "20"
+# petal.gname = "staff"
+# dest."Applications/raygun.app" = "raygun.app"
+#
+# petal.uid = "0"
+# petal.gid = "0"
+# petal.uname = "root"
+# petal.gname = "wheel"
 dest."usr/local/bin" = "bin"
 
 [[pkg]]

@@ -19,12 +19,11 @@ exclude = [
 
 [dependencies]
 appimage-rs = "0.3.2"
-ar = "0.9.0"
 die = "0.2.0"
 getopts = "0.2.24"
 hex = "0.4.3"
 itertools = "0.15.0"
-libarchive2 = "0.2.1"
+libarchive2 = { git = "https://github.com/mcandre/libarchive-rs.git", branch = "issue-16" }
 reqwest = { version = "0.13.5", features = ["blocking"] }
 rpm = "0.30.2"
 serde = { version = "1.0.228", features = ["derive"] }

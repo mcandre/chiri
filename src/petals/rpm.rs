@@ -141,7 +141,7 @@ impl Petal {
             let metadata = fs::metadata(source).with_path(source)?;
 
             if metadata.is_dir() {
-                for entry in walkdir::WalkDir::new(source) {
+                for entry in walkdir::WalkDir::new(source).sort_by_file_name() {
                     let entry = entry?;
                     let entry_pth = entry.path();
                     let md = entry.metadata()?;
@@ -156,15 +156,15 @@ impl Petal {
                         ));
                     }
 
-                    let entry_adopted = target.join(entry_pth.strip_prefix(source)?);
-                    let entry_adopted_string = entry_adopted
+                    let entry_adoptee = target.join(entry_pth.strip_prefix(source)?);
+                    let entry_adoptee_string = entry_adoptee
                         .components()
                         .collect::<path::PathBuf>()
                         .to_str()
-                        .ok_or(ChiriError::UnrenderablePathError(entry_adopted))?
+                        .ok_or(ChiriError::UnrenderablePathError(entry_adoptee))?
                         .to_string();
 
-                    let options = rpm::FileOptions::new(&entry_adopted_string);
+                    let options = rpm::FileOptions::new(&entry_adoptee_string);
                     rpm_pkg.with_file(entry_pth, options)?;
                 }
             } else if metadata.is_file() {
