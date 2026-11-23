@@ -19,18 +19,21 @@ For advanced operations, such as linting, we further supplement with some softwa
 * build-essential
 * clang
 * libacl1-dev
+* libb2-dev
 * libbz2-dev
 
 ### macOS (Homebrew)
 
 * Xcode
 * bzip2
+* libb2
 
 ### RHEL
 
 * @development-tools
 * clang
 * libacl1-devel
+* libb2-devel
 * libbz2-devel
 
 ## Recommended
