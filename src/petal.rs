@@ -27,6 +27,9 @@ pub enum Petal {
 
     /// Rpm builds RHEL family packages.
     Rpm,
+
+    /// Msi builds Windows (MSI) packages.
+    Msi,
 }
 
 impl Petal {
@@ -42,6 +45,7 @@ impl Petal {
             Petal::Deb => self.emit_deb(pkg, chiri),
             Petal::FreeBSD => self.emit_freebsd(pkg, chiri),
             Petal::MacOS => self.emit_macos(pkg, chiri),
+            Petal::Msi => self.emit_msi(pkg, chiri),
             Petal::Rpm => self.emit_rpm(pkg, chiri),
             Petal::Tarball => self.emit_tarball(pkg, chiri),
         }

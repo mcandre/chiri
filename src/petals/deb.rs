@@ -67,6 +67,12 @@ impl Petal {
             )));
         }
 
+        if priority.is_empty() {
+            return Err(ChiriError::ValidationError(String::from(
+                "petal.priority blank",
+            )));
+        }
+
         let t = tempfile::tempdir().with_path("<tmp>")?;
         let t_pth = t.path();
 

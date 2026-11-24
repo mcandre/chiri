@@ -96,6 +96,18 @@ impl Petal {
             )));
         }
 
+        if prefix.is_empty() {
+            return Err(ChiriError::ValidationError(String::from(
+                "petal.prefix blank",
+            )));
+        }
+
+        if single.is_empty() {
+            return Err(ChiriError::ValidationError(String::from(
+                "petal.single blank",
+            )));
+        }
+
         //
         // Generate PKG
         //

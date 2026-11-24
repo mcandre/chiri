@@ -92,6 +92,18 @@ petal.chipset = "arm64"
 dest."usr/local/bin" = "bin/darwin/arm64"
 
 [[pkg]]
+kind = "msi"
+petal.chipset = "x64"
+petal.upgrade_code = "69F159AD-CE9C-4EE8-A25D-BB4E8A226D73"
+dest."bin" = "bin/windows/amd64"
+
+[[pkg]]
+kind = "msi"
+petal.chipset = "arm64"
+petal.upgrade_code = "69F159AD-CE9C-4EE8-A25D-BB4E8A226D73"
+dest."bin" = "bin/windows/arm64"
+
+[[pkg]]
 kind = "rpm"
 petal.chipset = "x86_64"
 # petal.dependencies = "bash@5,curl@8"
