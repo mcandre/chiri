@@ -1,7 +1,7 @@
 use hex;
 use itertools::Itertools;
-use xarxarxar;
 use sha2::Digest;
+use xarxarxar;
 
 use std::collections::{BTreeMap, HashSet};
 use std::fs;

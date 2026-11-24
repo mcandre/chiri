@@ -1,5 +1,5 @@
-use xarxarxar;
 use tempfile;
+use xarxarxar;
 
 use std::fs;
 use std::os::unix::fs::MetadataExt;
