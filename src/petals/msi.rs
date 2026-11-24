@@ -304,14 +304,14 @@ impl Petal {
 
             let pth_relative_string = pth_relative
                 .to_str()
-                .ok_or(ChiriError::UnrenderablePathError(pth_relative)?;
+                .ok_or(ChiriError::UnrenderablePathError(pth_relative))?;
             let basename = pth.basename();
             let parent = pth.parent();
             let parent_string = pth
                 .parent()
                 .strip_prefix(name_dir)?
                 .to_str()
-                .ok_or(ChiriError::UnrenderablePathError(pth_relative)?;
+                .ok_or(ChiriError::UnrenderablePathError(pth_relative))?;
             let d_parent_id = target_dir_to_id.get(parent_string)?;
 
             let metadata = entry.metadata()?;
