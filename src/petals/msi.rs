@@ -64,7 +64,7 @@ impl Petal {
         let msi_artifacts_root = chiri.artifacts.clone().unwrap().join("windows");
         fs::create_dir_all(&msi_artifacts_root).with_path(&msi_artifacts_root)?;
 
-        let mut basename = format!("{name}-${version}");
+        let mut basename = format!("{name}-{version}");
 
         if !rev.is_empty() {
             basename.push('.');
@@ -76,7 +76,13 @@ impl Petal {
         basename.push_str(".msi");
 
         let artifact_filename = msi_artifacts_root.join(basename);
-        let f = fs::File::create(&artifact_filename).with_path(&artifact_filename)?;
+        let f = fs::OpenOptions::new()
+            .read(true)
+            .write(true)
+            .truncate(true)
+            .create(true)
+            .open(&artifact_filename)
+            .with_path(&artifact_filename)?;
         let mut package =
             msi::Package::create(msi::PackageType::Installer, f).with_path(&artifact_filename)?;
         let info = package.summary_info_mut();
@@ -343,12 +349,12 @@ impl Petal {
         for entry in walkdir::WalkDir::new(&name_dir).sort_by_file_name() {
             let entry = entry?;
             let pth = entry.path();
-            let pth_relative = pth.strip_prefix(&name_dir)?;
 
-            if pth_relative.is_empty() {
+            if pth == name_dir {
                 continue;
             }
 
+            let pth_relative = pth.strip_prefix(t_pth)?;
             let pth_relative_string = pth_relative
                 .to_str()
                 .ok_or(ChiriError::UnrenderablePathError(
@@ -361,20 +367,15 @@ impl Petal {
             let basename_str = basename
                 .to_str()
                 .ok_or(ChiriError::UnrenderablePathError(basename.into()))?;
-            let parent = pth
+            let parent = pth_relative
                 .parent()
                 .ok_or(ChiriError::ParentLookupError(pth.to_path_buf()))?;
-            let parent_relative = parent.strip_prefix(&name_dir)?;
-            let parent_relative_string = parent_relative
+            let parent_string = parent
                 .to_str()
-                .ok_or(ChiriError::UnrenderablePathError(
-                    parent_relative.to_path_buf(),
-                ))?
+                .ok_or(ChiriError::UnrenderablePathError(parent.to_path_buf()))?
                 .to_owned();
-            let d_parent_id = target_dir_to_id
-                .get(&parent_relative_string)
-                .unwrap()
-                .clone();
+
+            let d_parent_id = target_dir_to_id.get(&parent_string).unwrap().clone();
             let metadata = entry.metadata()?;
 
             if metadata.is_dir() {
@@ -389,6 +390,8 @@ impl Petal {
                         Value::Str(basename_str.to_string()),
                     ]))
                     .with_path(&artifact_filename)?;
+
+                continue;
             }
 
             if !metadata.is_file() {
@@ -429,7 +432,7 @@ impl Petal {
                 .insert_rows(Insert::into("Component").row(vec![
                     Value::Str(c_id.clone()),
                     Value::Str(c_uuid.to_string()),
-                    Value::Str(parent_relative_string),
+                    Value::Str(parent_string),
                     Value::Int(attribute_64_bit),
                     Value::Null,
                     Value::Str(f_id),
