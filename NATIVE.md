@@ -42,7 +42,7 @@ sudo pkg install -y \
 
 ```sh
 xcode-select --install
-brew install \
+brew install -y \
     bzip2 \
     libb2 \
     lz4 \

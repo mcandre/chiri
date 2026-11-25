@@ -68,6 +68,8 @@ For details on building from source, see [DEVELOPMENT](DEVELOPMENT.md).
 
 Fully static [Go](https://go.dev/)/[musl](https://musl.libc.org/) binaries tend to improve portability for compiled applications.
 
+Windows Installer does not integrate well with UNIX file paths. For example, copy Windows packages from WSL to NTFS, before attempting to test them.
+
 # RESOURCES
 
 Prior art, personal plugs, and tools for developing portable applications (including non-Rust projects)!
