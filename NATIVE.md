@@ -66,10 +66,16 @@ sudo dnf install -y \
 
 ## `error: libarchive error (code -1): Using external zstd program [errno: -1]`
 
+### Problem
+
 libarchive2-sys may attempt to shell out to zstd, such as when building Debian family packages.
 
-Ensure that your operating system's zstd header package is installed.
+This can happen when the zstd (header) package is missing. Or was missing at the time when chiri's dependencies were initially compiled.
 
-Then, run `cargo clean` to reset cargo's wrecked libarchive2-sys cache.
+### Solution
 
-Then, recompile chiri.
+Fully rebuild chiri, including dependencies, in a way that targets the zstd library, rather than zstd executables.
+
+1. Ensure that your operating system's zstd header package is installed.
+2. Run `cargo clean` to reset cargo's wrecked libarchive2-sys cache.
+3. Recompile chiri.
