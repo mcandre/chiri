@@ -1,6 +1,7 @@
 use rpm;
 use thiserror::Error;
 use toml;
+use uuid;
 
 use std::io;
 use std::path;
@@ -59,6 +60,12 @@ pub enum ChiriError {
 
     #[error(transparent)]
     BomError(#[from] bom::Error),
+
+    #[error(transparent)]
+    UUIDError(#[from] uuid::Error),
+
+    #[error("{0}")]
+    CABError(String),
 }
 
 pub trait ResultExt<T> {

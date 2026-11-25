@@ -14,6 +14,7 @@ use std::path;
 use std::time;
 
 pub mod bom;
+pub mod dos;
 pub mod error;
 pub mod petal;
 pub mod petals;

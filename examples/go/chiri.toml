@@ -100,7 +100,7 @@ dest."bin" = "bin/windows/amd64"
 
 [[pkg]]
 kind = "msi"
-petal.chipset = "arm64"
+petal.chipset = "Arm64"
 dest."bin" = "bin/windows/arm64"
 
 [[pkg]]
