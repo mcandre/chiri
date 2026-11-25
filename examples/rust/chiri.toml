@@ -9,6 +9,8 @@ maintainer = "Marvin the Martian <marvin@mars.test>"
 manufacturer = "Mars Corp"
 summary = "Space modulator"
 description = "Illudium Q-36 explosive space modulator"
+product_code = "42079DFF-30BD-4F2A-9A76-BBA25B10E17A"
+upgrade_code = "69F159AD-CE9C-4EE8-A25D-BB4E8A226D73"
 copyright = "Copyright (C) 1948 Marvin the Martian"
 license = "0BSD"
 url = "https://mars.test/"
@@ -90,6 +92,16 @@ petal.chipset = "arm64"
 # petal.uname = "root"
 # petal.gname = "wheel"
 dest."usr/local/bin" = ".crit/bin/raygun-0.0.1/aarch64-apple-darwin"
+
+[[pkg]]
+kind = "msi"
+petal.chipset = "x64"
+dest."bin" = ".crit/bin/raygun-0.0.1/x86_64-pc-windows-msvc"
+
+[[pkg]]
+kind = "msi"
+petal.chipset = "Arm64"
+dest."bin" = ".crit/bin/raygun-0.0.1/aarch64-pc-windows-msvc"
 
 [[pkg]]
 kind = "rpm"
