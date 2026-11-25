@@ -16,24 +16,60 @@ Some Rust dependencies rely on native C/C++ resources.
 
 ```sh
 sudo apt-get update
-sudo apt-get install -y build-essential clang libacl1-dev libb2-dev libbz2-dev
+sudo apt-get install -y \
+    build-essential \
+    clang \
+    libacl1-dev \
+    libb2-dev \
+    libbz2-dev \
+    liblz4-dev \
+    libzstd-dev
 ```
 
 ## FreeBSD
 
 ```sh
-sudo pkg install -y autoconf automake libb2 libtool gmake
+sudo pkg install -y \
+    autoconf \
+    automake \
+    libb2 \
+    libtool \
+    liblz4 \
+    gmake
 ```
 
 ## macOS (Homebrew)
 
 ```sh
 xcode-select --install
-brew install bzip2 libb2
+brew install \
+    bzip2 \
+    libb2 \
+    lz4 \
+    zstd
 ```
 
 ## RHEL
 
 ```sh
-sudo dnf install -y @development-tools clang libacl1-devel libb2-devel libbz2-devel
+sudo dnf install -y \
+    @development-tools \
+    clang \
+    libacl1-devel \
+    libb2-devel \
+    libbz2-devel \
+    libzstd-devel \
+    lz4-devel
 ```
+
+# FAQ
+
+## `error: libarchive error (code -1): Using external zstd program [errno: -1]`
+
+libarchive2-sys may attempt to shell out to zstd, such as when building Debian family packages.
+
+Ensure that your operating system's zstd header package is installed.
+
+Then, run `cargo clean` to reset cargo's wrecked libarchive2-sys cache.
+
+Then, recompile chiri.

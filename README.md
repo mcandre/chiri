@@ -62,6 +62,7 @@ For details on building from source, see [DEVELOPMENT](DEVELOPMENT.md).
 * macOS
 * RPM
 * Tarball
+* Windows
 
 # TIPS
 
