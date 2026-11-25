@@ -292,6 +292,8 @@ petal.chipset = "amd64"
 | Tarball (UNIX) | 64-bit ARM            | `aarch64`, `arm64`, etc.           |
 | Tarball (UNIX) | 64-bit Intel          | `x86_64`, `amd64`, etc.            |
 | Tarball (UNIX) | (chipset independent) | `all`, `noarch`, `universal`, etc. |
+| Windows (MSI)  | 64-bit ARM            | `Arm64`                            |
+| Windows (MSI)  | 64-bit Intel          | `x64`                              |
 
 Note: Some platforms / package managers / package manager versions may lack support for noarch-style semantics.
 

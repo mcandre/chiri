@@ -1,7 +1,7 @@
 use hex;
 use itertools::Itertools;
-use xarxarxar;
 use sha2::Digest;
+use xarxarxar;
 
 use std::collections::{BTreeMap, HashSet};
 use std::fs;
@@ -93,6 +93,18 @@ impl Petal {
         if origin.is_empty() {
             return Err(ChiriError::ValidationError(String::from(
                 "petal.origin blank/missing",
+            )));
+        }
+
+        if prefix.is_empty() {
+            return Err(ChiriError::ValidationError(String::from(
+                "petal.prefix blank",
+            )));
+        }
+
+        if single.is_empty() {
+            return Err(ChiriError::ValidationError(String::from(
+                "petal.single blank",
             )));
         }
 

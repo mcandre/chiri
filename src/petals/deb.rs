@@ -1,5 +1,5 @@
-use xarxarxar;
 use tempfile;
+use xarxarxar;
 
 use std::fs;
 use std::path;
@@ -64,6 +64,12 @@ impl Petal {
         if description.is_empty() {
             return Err(ChiriError::ValidationError(String::from(
                 "petal.description blank/missing",
+            )));
+        }
+
+        if priority.is_empty() {
+            return Err(ChiriError::ValidationError(String::from(
+                "petal.priority blank",
             )));
         }
 

@@ -19,11 +19,13 @@ exclude = [
 
 [dependencies]
 appimage-rs = "0.3.2"
+cab = "0.6.0"
 die = "0.2.0"
 getopts = "0.2.24"
 hex = "0.4.3"
 itertools = "0.15.0"
 # libarchive2 = "0.2.1"
+msi = "0.11.1"
 rpm = "0.30.2"
 serde = { version = "1.0.228", features = ["derive"] }
 sha2 = "0.11.1"
@@ -31,6 +33,7 @@ tempfile = "3.27.0"
 thiserror = "2.0.21"
 toml = "0.9.8"
 ureq = "3.5.2"
+uuid = { version = "1.29.3", features = ["v4"] }
 walkdir = "2.5.0"
 xarxarxar = "0.2.2"
 
