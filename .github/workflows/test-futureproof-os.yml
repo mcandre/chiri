@@ -28,7 +28,11 @@ jobs:
     - run: |
         sudo apt-get update
         sudo apt-get install -y \
-          libacl1-dev \
-          libb2-dev \
-          libbz2-dev
+            build-essential \
+            clang \
+            libacl1-dev \
+            libb2-dev \
+            libbz2-dev \
+            liblz4-dev \
+            libzstd-dev
     - run: "make test"
