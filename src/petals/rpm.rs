@@ -20,10 +20,12 @@ impl Petal {
     /// * pkg.petal.summary present, nonblank
     pub fn emit_rpm(self: &Petal, pkg: &Pkg, chiri: &Chiri) -> Result<(), ChiriError> {
         let blank = String::new();
+        let base_dir_rpm = String::from("rpm");
         let petal = pkg.petal.clone().unwrap_or_default();
         let name = petal.get("name").unwrap_or(&blank);
         let version = petal.get("version").unwrap_or(&blank);
         let rev = petal.get("rev").unwrap_or(&blank);
+        let base_dir = petal.get("base_dir").unwrap_or(&base_dir_rpm);
         let dist = petal.get("dist").unwrap_or(&blank);
         let chipset = petal.get("chipset").unwrap_or(&blank);
         let copyright = petal.get("copyright").unwrap_or(&blank);
@@ -199,7 +201,7 @@ impl Petal {
         }
 
         basename.push_str(".rpm");
-        let rpm_artifacts_root = chiri.artifacts.clone().unwrap().join("rpm");
+        let rpm_artifacts_root = chiri.artifacts.clone().unwrap().join(base_dir);
         fs::create_dir_all(&rpm_artifacts_root).with_path(&rpm_artifacts_root)?;
         let artifact_filename = rpm_artifacts_root.join(basename);
         rpm_pkg.build()?.write_file(artifact_filename)?;

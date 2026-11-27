@@ -13,10 +13,13 @@ impl Petal {
     /// emit_tarball generates generic UNIX tarballs.
     pub fn emit_tarball(self: &Petal, pkg: &Pkg, chiri: &Chiri) -> Result<(), ChiriError> {
         let blank = String::new();
+        let tarball = String::from("tarball");
         let petal = pkg.petal.clone().unwrap_or_default();
         let name = petal.get("name").unwrap_or(&blank);
         let version = petal.get("version").unwrap_or(&blank);
         let rev = petal.get("rev").unwrap_or(&blank);
+        let base_dir = petal.get("base_dir").unwrap_or(&tarball);
+        let dist = petal.get("dist").unwrap_or(&blank);
         let chipset = petal.get("chipset").unwrap_or(&blank);
         let dest = pkg.dest.clone().unwrap_or_default();
         let mut basename = format!("{name}-{version}");
@@ -26,13 +29,18 @@ impl Petal {
             basename.push_str(rev);
         }
 
+        if !dist.is_empty() {
+            basename.push('.');
+            basename.push_str(dist);
+        }
+
         if !chipset.is_empty() {
-            basename.push('-');
+            basename.push('.');
             basename.push_str(chipset);
         }
 
         basename.push_str(".tgz");
-        let tarball_artifacts_root = chiri.artifacts.clone().unwrap().join("tarball");
+        let tarball_artifacts_root = chiri.artifacts.clone().unwrap().join(base_dir);
         fs::create_dir_all(&tarball_artifacts_root).with_path(&tarball_artifacts_root)?;
         let artifact_filename = tarball_artifacts_root.join(basename);
         let mut archive = xarxarxar::WriteArchive::new()

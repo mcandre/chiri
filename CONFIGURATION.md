@@ -92,6 +92,54 @@ version = "0.0.1"
 rev = "1"
 ```
 
+### `base_dir`
+
+Override artifact base directory.
+
+Examples:
+
+```toml
+[petal]
+base_dir = "debian" # Package targets Debian
+```
+
+```toml
+[petal]
+base_dir = "debian-12" # Package targets Debian 12
+```
+
+```toml
+[petal]
+base_dir = "ubuntu" # Package targest Ubuntu
+```
+
+```toml
+[petal]
+base_dir = "popos" # Package targets Pop!_OS
+```
+
+Some package managers, such as RPM, may also encourage marking the artifact filename with product distribution variation identifiers. See the `dist` option.
+
+### `dist`
+
+Specify a particular product variant in artifact filenames.
+
+Examples:
+
+```toml
+petal.dist = "linux" # Tarball targets Linux
+```
+
+```toml
+petal.dist = "gnu" # Tarball targets glibc
+```
+
+```toml
+petal.dist = "musl" # Tarball targets musl
+```
+
+Some package managers, such as DEB, may lack support for inserting product distribution variant identifers in package filenames. See the `base_dir` option.
+
 ### `maintainer`
 
 Often required by package managers.
@@ -184,6 +232,70 @@ url = "https://mars.test/"
 ### Other distro relative fields
 
 A distro may have additional optional and/or required fields.
+
+## `base_dir`
+
+Override artifact base directory.
+
+Examples:
+
+```toml
+petal.base_dir = "debian" # Package targets Debian
+```
+
+```toml
+petal.base_dir = "debian-12" # Package targets Debian 12
+```
+
+```toml
+petal.base_dir = "ubuntu" # Package targest Ubuntu
+```
+
+```toml
+petal.base_dir = "popos" # Package targets Pop!_OS
+```
+
+Some package managers, such as RPM, may also encourage marking the artifact filename with product distribution variation identifiers. See the `dist` option.
+
+## `dist`
+
+Specify a particular product variant in artifact filenames.
+
+Examples:
+
+```toml
+petal.dist = "fc40" # Package targets Fedora Core 40
+```
+
+```toml
+petal.dist = "rhel10" # Package targets RHEL 10
+```
+
+```toml
+petal.dist = "win11" # Package targets Windows 11
+```
+
+```toml
+petal.dist = "reactos04" # Package targets ReactOS 0.4
+```
+
+```toml
+petal.dist = "bash4" # Package targets GNU bash 4+
+```
+
+```toml
+petal.dist = "linux" # Tarball targets Linux
+```
+
+```toml
+petal.dist = "gnu" # Tarball targets glibc
+```
+
+```toml
+petal.dist = "musl" # Tarball targets musl
+```
+
+Some package managers, such as DEB, may lack support for inserting product distribution variant identifers in package filenames. See the `base_dir` option.
 
 ## `dest`
 

@@ -124,11 +124,9 @@ impl Petal {
             artifacts_root_basename.push_str(chipset_abi);
         }
 
-        let freebsd_artifacts_root = chiri
-            .artifacts
-            .clone()
-            .unwrap()
-            .join(artifacts_root_basename);
+        let base_dir = petal.get("base_dir").unwrap_or(&artifacts_root_basename);
+
+        let freebsd_artifacts_root = chiri.artifacts.clone().unwrap().join(base_dir);
 
         fs::create_dir_all(&freebsd_artifacts_root).with_path(&freebsd_artifacts_root)?;
 

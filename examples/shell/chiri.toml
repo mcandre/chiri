@@ -22,6 +22,7 @@ url = "https://mars.test/"
 kind = "appimage"
 petal.categories = "Science;Utility"
 petal.chipset = "x86_64"
+# petal.dist = "bash4"
 petal.executable = "usr/bin/raygun"
 petal.icon = "raygun.png"
 dest."usr/bin" = "bin"
@@ -30,12 +31,14 @@ dest."usr/bin" = "bin"
 kind = "appimage"
 petal.categories = "Science;Utility"
 petal.chipset = "aarch64"
+# petal.dist = "bash4"
 petal.executable = "usr/bin/raygun"
 petal.icon = "raygun.png"
 dest."usr/bin" = "bin"
 
 [[pkg]]
 kind = "deb"
+# petal.base_dir = "debian-12"
 # petal.chipset = "amd64"
 petal.chipset = "all"
 # petal.dependencies = "bash"
@@ -44,6 +47,7 @@ dest."usr/bin" = "bin"
 [[pkg]]
 kind = "freebsd"
 petal.origin = "local/raygun"
+# petal.base_dir = "freebsd"
 # petal.chipset = "freebsd:*:amd64"
 petal.chipset = "freebsd:*"
 # petal.dependencies = "bash@: { origin: \"shells/bash\" }"
@@ -52,6 +56,7 @@ dest."usr/local/bin" = "bin"
 
 [[pkg]]
 kind = "macos"
+# petal.dist = "macos26"
 petal.chipset = "universal"
 #
 # petal.uid = "501"
@@ -67,17 +72,19 @@ dest."usr/local/bin" = "bin"
 
 [[pkg]]
 kind = "msi"
+# petal.dist = "win11"
 petal.chipset = "x64"
 dest."bin" = "bin-win"
 
 [[pkg]]
 kind = "msi"
+# petal.dist = "win11"
 petal.chipset = "Arm64"
 dest."bin" = "bin-win"
 
 [[pkg]]
 kind = "rpm"
-# petal.dist = "fc45"
+# petal.dist = "fc40"
 # petal.chipset = "x86_64"
 petal.chipset = "noarch"
 # petal.dependencies = "bash@5,curl@8"
@@ -85,6 +92,7 @@ dest."usr/bin" = "bin"
 
 [[pkg]]
 kind = "tarball"
+# petal.dist = "bash4"
 # petal.chipset = "amd64"
-petal.chipset = "noarch"
+# petal.chipset = "noarch"
 dest."opt/raygun/bin" = "bin"

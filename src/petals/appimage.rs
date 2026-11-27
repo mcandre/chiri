@@ -28,10 +28,13 @@ impl Petal {
     /// * pkg.petal.icon present, nonblank
     pub fn emit_appimage(self: &Petal, pkg: &Pkg, chiri: &Chiri) -> Result<(), ChiriError> {
         let blank = String::new();
+        let appimage = String::from("appimage");
         let petal = pkg.petal.clone().unwrap_or_default();
         let name = petal.get("name").unwrap_or(&blank);
         let version = petal.get("version").unwrap_or(&blank);
         let rev = petal.get("rev").unwrap_or(&blank);
+        let base_dir = petal.get("base_dir").unwrap_or(&appimage);
+        let dist = petal.get("dist").unwrap_or(&blank);
         let categories_semicolon_separated = petal.get("categories").unwrap_or(&blank);
         let chipset = petal.get("chipset").unwrap_or(&blank);
         let copyright = petal.get("copyright").unwrap_or(&blank);
@@ -165,9 +168,15 @@ impl Petal {
 
         basename.push('-');
         basename.push_str(chipset);
+
+        if !dist.is_empty() {
+            basename.push('.');
+            basename.push_str(dist);
+        }
+
         basename.push_str(".AppImage");
 
-        let appimage_artifacts_root = chiri.artifacts.clone().unwrap().join("appimage");
+        let appimage_artifacts_root = chiri.artifacts.clone().unwrap().join(base_dir);
         fs::create_dir_all(&appimage_artifacts_root).with_path(&appimage_artifacts_root)?;
         let artifact_filename = appimage_artifacts_root.join(basename);
 

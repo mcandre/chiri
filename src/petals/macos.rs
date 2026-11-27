@@ -22,10 +22,13 @@ impl Petal {
     pub fn emit_macos(self: &Petal, pkg: &Pkg, chiri: &Chiri) -> Result<(), ChiriError> {
         let now = time::SystemTime::now();
         let blank = String::new();
+        let macos = String::from("macos");
         let petal = pkg.petal.clone().unwrap_or_default();
         let name = petal.get("name").unwrap_or(&blank);
         let version = petal.get("version").unwrap_or(&blank);
         let rev = petal.get("rev").unwrap_or(&blank);
+        let base_dir = petal.get("base_dir").unwrap_or(&macos);
+        let dist = petal.get("dist").unwrap_or(&blank);
         let chipset = petal.get("chipset").unwrap_or(&blank);
         let copyright = petal.get("copyright").unwrap_or(&blank);
         let identifier = petal.get("identifier").unwrap_or(&blank);
@@ -295,7 +298,7 @@ impl Petal {
         // Generate PKG
         //
 
-        let pkg_artifacts_root = chiri.artifacts.clone().unwrap().join("macos");
+        let pkg_artifacts_root = chiri.artifacts.clone().unwrap().join(base_dir);
         fs::create_dir_all(&pkg_artifacts_root).with_path(&pkg_artifacts_root)?;
 
         let mut basename = String::from(name);
@@ -311,6 +314,11 @@ impl Petal {
         if !rev.is_empty() {
             basename.push('-');
             basename.push_str(rev);
+        }
+
+        if !dist.is_empty() {
+            basename.push('-');
+            basename.push_str(dist);
         }
 
         basename.push_str(".pkg");

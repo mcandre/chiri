@@ -22,11 +22,13 @@ impl Petal {
     /// * pkg.petal.description present, nonblank
     pub fn emit_deb(self: &Petal, pkg: &Pkg, chiri: &Chiri) -> Result<(), ChiriError> {
         let blank = String::new();
+        let deb = String::from("deb");
         let optional = String::from("optional");
         let petal = pkg.petal.clone().unwrap_or_default();
         let name = petal.get("name").unwrap_or(&blank);
         let version = petal.get("version").unwrap_or(&blank);
         let rev = petal.get("rev").unwrap_or(&blank);
+        let base_dir = petal.get("base_dir").unwrap_or(&deb);
         let chipset = petal.get("chipset").unwrap_or(&blank);
         let copyright = petal.get("copyright").unwrap_or(&blank);
         let license = petal.get("license").unwrap_or(&blank);
@@ -172,7 +174,7 @@ impl Petal {
 
         basename.push_str(".deb");
 
-        let deb_artifacts_root = chiri.artifacts.clone().unwrap().join("deb");
+        let deb_artifacts_root = chiri.artifacts.clone().unwrap().join(base_dir);
 
         fs::create_dir_all(&deb_artifacts_root).with_path(&deb_artifacts_root)?;
 

@@ -19,6 +19,7 @@ url = "https://mars.test/"
 kind = "appimage"
 petal.categories = "Science;Utility"
 petal.chipset = "x86_64"
+# petal.dist = "musl"
 petal.executable = "usr/bin/raygun"
 petal.icon = "raygun.png"
 dest."usr/bin" = ".crit/bin/raygun-0.0.1/x86_64-unknown-linux-musl"
@@ -27,24 +28,28 @@ dest."usr/bin" = ".crit/bin/raygun-0.0.1/x86_64-unknown-linux-musl"
 kind = "appimage"
 petal.categories = "Science;Utility"
 petal.chipset = "aarch64"
+# petal.dist = "musl"
 petal.executable = "usr/bin/raygun"
 petal.icon = "raygun.png"
 dest."usr/bin" = ".crit/bin/raygun-0.0.1/aarch64-unknown-linux-musl"
 
 [[pkg]]
 kind = "deb"
+# petal.base_dir = "debian-12"
 petal.chipset = "amd64"
 # petal.dependencies = "bash"
 dest."usr/bin" = ".crit/bin/raygun-0.0.1/x86_64-unknown-linux-musl"
 
 [[pkg]]
 kind = "deb"
+# petal.base_dir = "debian-12"
 petal.chipset = "arm64"
 # petal.dependencies = "bash"
 dest."usr/bin" = ".crit/bin/raygun-0.0.1/aarch64-unknown-linux-musl"
 
 [[pkg]]
 kind = "deb"
+# petal.base_dir = "debian-12"
 petal.chipset = "loong64"
 # petal.dependencies = "bash"
 dest."usr/bin" = ".crit/bin/raygun-0.0.1/loongarch64-unknown-linux-musl"
@@ -52,6 +57,7 @@ dest."usr/bin" = ".crit/bin/raygun-0.0.1/loongarch64-unknown-linux-musl"
 [[pkg]]
 kind = "freebsd"
 petal.origin = "local/raygun"
+# petal.base_dir = "freebsd"
 petal.chipset = "freebsd:*:amd64"
 # petal.dependencies = "bash: { origin: \"shells/bash\" }"
 # petal.prefix = "/usr/local"
@@ -61,6 +67,7 @@ dest."usr/local/bin" = ".crit/bin/raygun-0.0.1/x86_64-unknown-freebsd"
 [[pkg]]
 kind = "freebsd"
 petal.origin = "local/raygun"
+# petal.base_dir = "freebsd"
 petal.chipset = "freebsd:*:aarch64"
 # petal.dependencies = "bash: { origin: \"shells/bash\" }"
 # petal.prefix = "/usr/local"
@@ -69,6 +76,7 @@ dest."usr/local/bin" = ".crit/bin/raygun-0.0.1/aarch64-unknown-freebsd"
 
 [[pkg]]
 kind = "macos"
+# petal.dist = "macos26"
 petal.chipset = "x86_64"
 #
 # petal.uid = "501"
@@ -84,6 +92,7 @@ dest."usr/local/bin" = ".crit/bin/raygun-0.0.1/x86_64-apple-darwin"
 
 [[pkg]]
 kind = "macos"
+# petal.dist = "macos26"
 petal.chipset = "arm64"
 #
 # petal.uid = "501"
@@ -99,46 +108,51 @@ dest."usr/local/bin" = ".crit/bin/raygun-0.0.1/aarch64-apple-darwin"
 
 [[pkg]]
 kind = "msi"
+# petal.dist = "win11"
 petal.chipset = "x64"
 dest."bin" = ".crit/bin/raygun-0.0.1/x86_64-pc-windows-msvc"
 
 [[pkg]]
 kind = "msi"
+# petal.dist = "win11"
 petal.chipset = "Arm64"
 dest."bin" = ".crit/bin/raygun-0.0.1/aarch64-pc-windows-msvc"
 
 [[pkg]]
 kind = "rpm"
-# petal.dist = "fc45"
+# petal.dist = "fc40"
 petal.chipset = "x86_64"
 # petal.dependencies = "bash@5,curl@8"
 dest."usr/bin" = ".crit/bin/raygun-0.0.1/x86_64-unknown-linux-musl"
 
 [[pkg]]
 kind = "rpm"
-# petal.dist = "fc45"
+# petal.dist = "fc40"
 petal.chipset = "aarch64"
 # petal.dependencies = "bash@5,curl@8"
 dest."usr/bin" = ".crit/bin/raygun-0.0.1/aarch64-unknown-linux-musl"
 
 [[pkg]]
 kind = "rpm"
-# petal.dist = "fc45"
+# petal.dist = "fc40"
 petal.chipset = "loongarch64"
 # petal.dependencies = "bash@5,curl@8"
 dest."usr/bin" = ".crit/bin/raygun-0.0.1/loongarch64-unknown-linux-musl"
 
 [[pkg]]
 kind = "tarball"
+petal.dist = "linux"
 petal.chipset = "amd64"
 dest."opt/raygun/bin" = ".crit/bin/raygun-0.0.1/x86_64-unknown-linux-musl"
 
 [[pkg]]
 kind = "tarball"
+petal.dist = "linux"
 petal.chipset = "arm64"
 dest."opt/raygun/bin" = ".crit/bin/raygun-0.0.1/aarch64-unknown-linux-musl"
 
 [[pkg]]
 kind = "tarball"
+petal.dist = "linux"
 petal.chipset = "loongarch64"
 dest."opt/raygun/bin" = ".crit/bin/raygun-0.0.1/loongarch64-unknown-linux-musl"

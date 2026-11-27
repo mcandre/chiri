@@ -26,6 +26,7 @@ impl Petal {
     /// * pkg.petal.manufacturer present, nonblank
     pub fn emit_msi(self: &Petal, pkg: &Pkg, chiri: &Chiri) -> Result<(), ChiriError> {
         let blank = String::new();
+        let windows = String::from("windows");
         let code_page_windows1252 = CodePage::Windows1252;
         let en_us = String::from("en-US");
         let lcid1033 = String::from("1033");
@@ -35,6 +36,8 @@ impl Petal {
         let name_title = format!("{name} Installer");
         let version = petal.get("version").unwrap_or(&blank);
         let rev = petal.get("rev").unwrap_or(&blank);
+        let base_dir = petal.get("base_dir").unwrap_or(&windows);
+        let dist = petal.get("dist").unwrap_or(&blank);
         let product_language = petal.get("product_language").unwrap_or(&lcid1033);
         let product_code = petal.get("product_code").unwrap_or(&blank);
         let upgrade_code = petal.get("upgrade_code").unwrap_or(&blank);
@@ -112,7 +115,7 @@ impl Petal {
             )));
         }
 
-        let msi_artifacts_root = chiri.artifacts.clone().unwrap().join("windows");
+        let msi_artifacts_root = chiri.artifacts.clone().unwrap().join(base_dir);
         fs::create_dir_all(&msi_artifacts_root).with_path(&msi_artifacts_root)?;
 
         let mut basename = format!("{name}-{version}");
@@ -120,6 +123,11 @@ impl Petal {
         if !rev.is_empty() {
             basename.push('.');
             basename.push_str(rev);
+        }
+
+        if !dist.is_empty() {
+            basename.push('-');
+            basename.push_str(dist);
         }
 
         basename.push('-');
