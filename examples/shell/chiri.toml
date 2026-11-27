@@ -77,6 +77,7 @@ dest."bin" = "bin-win"
 
 [[pkg]]
 kind = "rpm"
+# petal.dist = "fc45"
 # petal.chipset = "x86_64"
 petal.chipset = "noarch"
 # petal.dependencies = "bash@5,curl@8"

@@ -125,30 +125,35 @@ dest."bin" = "bin/windows/arm64"
 
 [[pkg]]
 kind = "rpm"
+petal.dist = "fc45"
 petal.chipset = "x86_64"
 # petal.dependencies = "bash@5,curl@8"
 dest."usr/bin" = "bin/linux/amd64"
 
 [[pkg]]
 kind = "rpm"
+# petal.dist = "fc45"
 petal.chipset = "aarch64"
 # petal.dependencies = "bash@5,curl@8"
 dest."usr/bin" = "bin/linux/arm64"
 
 [[pkg]]
 kind = "rpm"
+# petal.dist = "fc45"
 petal.chipset = "loongarch64"
 # petal.dependencies = "bash@5,curl@8"
 dest."usr/bin" = "bin/linux/loong64"
 
 [[pkg]]
 kind = "rpm"
+# petal.dist = "fc45"
 petal.chipset = "ppc64le"
 # petal.dependencies = "bash@5,curl@8"
 dest."usr/bin" = "bin/linux/ppc64le"
 
 [[pkg]]
 kind = "rpm"
+# petal.dist = "fc45"
 petal.chipset = "riscv64"
 # petal.dependencies = "bash@5,curl@8"
 dest."usr/bin" = "bin/linux/riscv64"

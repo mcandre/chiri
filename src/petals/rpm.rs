@@ -24,6 +24,7 @@ impl Petal {
         let name = petal.get("name").unwrap_or(&blank);
         let version = petal.get("version").unwrap_or(&blank);
         let rev = petal.get("rev").unwrap_or(&blank);
+        let dist = petal.get("dist").unwrap_or(&blank);
         let chipset = petal.get("chipset").unwrap_or(&blank);
         let copyright = petal.get("copyright").unwrap_or(&blank);
         let license = petal.get("license").unwrap_or(&blank);
@@ -185,6 +186,11 @@ impl Petal {
         if !rev.is_empty() {
             basename.push('-');
             basename.push_str(rev);
+        }
+
+        if !dist.is_empty() {
+            basename.push('.');
+            basename.push_str(dist);
         }
 
         if !chipset.is_empty() {

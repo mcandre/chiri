@@ -109,18 +109,21 @@ dest."bin" = ".crit/bin/raygun-0.0.1/aarch64-pc-windows-msvc"
 
 [[pkg]]
 kind = "rpm"
+# petal.dist = "fc45"
 petal.chipset = "x86_64"
 # petal.dependencies = "bash@5,curl@8"
 dest."usr/bin" = ".crit/bin/raygun-0.0.1/x86_64-unknown-linux-musl"
 
 [[pkg]]
 kind = "rpm"
+# petal.dist = "fc45"
 petal.chipset = "aarch64"
 # petal.dependencies = "bash@5,curl@8"
 dest."usr/bin" = ".crit/bin/raygun-0.0.1/aarch64-unknown-linux-musl"
 
 [[pkg]]
 kind = "rpm"
+# petal.dist = "fc45"
 petal.chipset = "loongarch64"
 # petal.dependencies = "bash@5,curl@8"
 dest."usr/bin" = ".crit/bin/raygun-0.0.1/loongarch64-unknown-linux-musl"
