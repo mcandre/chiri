@@ -35,15 +35,19 @@ dest."usr/bin" = ".crit/bin/raygun-0.0.1/aarch64-unknown-linux-musl"
 kind = "deb"
 petal.chipset = "amd64"
 # petal.dependencies = "bash"
-# petal.priority = "optional"
 dest."usr/bin" = ".crit/bin/raygun-0.0.1/x86_64-unknown-linux-musl"
 
 [[pkg]]
 kind = "deb"
 petal.chipset = "arm64"
 # petal.dependencies = "bash"
-# petal.priority = "optional"
 dest."usr/bin" = ".crit/bin/raygun-0.0.1/aarch64-unknown-linux-musl"
+
+[[pkg]]
+kind = "deb"
+petal.chipset = "loong64"
+# petal.dependencies = "bash"
+dest."usr/bin" = ".crit/bin/raygun-0.0.1/loongarch64-unknown-linux-musl"
 
 [[pkg]]
 kind = "freebsd"
@@ -116,6 +120,12 @@ petal.chipset = "aarch64"
 dest."usr/bin" = ".crit/bin/raygun-0.0.1/aarch64-unknown-linux-musl"
 
 [[pkg]]
+kind = "rpm"
+petal.chipset = "loongarch64"
+# petal.dependencies = "bash@5,curl@8"
+dest."usr/bin" = ".crit/bin/raygun-0.0.1/loongarch64-unknown-linux-musl"
+
+[[pkg]]
 kind = "tarball"
 petal.chipset = "amd64"
 dest."opt/raygun/bin" = ".crit/bin/raygun-0.0.1/x86_64-unknown-linux-musl"
@@ -124,3 +134,8 @@ dest."opt/raygun/bin" = ".crit/bin/raygun-0.0.1/x86_64-unknown-linux-musl"
 kind = "tarball"
 petal.chipset = "arm64"
 dest."opt/raygun/bin" = ".crit/bin/raygun-0.0.1/aarch64-unknown-linux-musl"
+
+[[pkg]]
+kind = "tarball"
+petal.chipset = "loongarch64"
+dest."opt/raygun/bin" = ".crit/bin/raygun-0.0.1/loongarch64-unknown-linux-musl"

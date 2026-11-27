@@ -39,7 +39,6 @@ kind = "deb"
 # petal.chipset = "amd64"
 petal.chipset = "all"
 # petal.dependencies = "bash"
-# petal.priority = "optional"
 dest."usr/bin" = "bin"
 
 [[pkg]]
@@ -86,5 +85,5 @@ dest."usr/bin" = "bin"
 [[pkg]]
 kind = "tarball"
 # petal.chipset = "amd64"
-petal.chipset = "all"
+petal.chipset = "noarch"
 dest."opt/raygun/bin" = "bin"

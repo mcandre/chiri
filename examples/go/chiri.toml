@@ -35,22 +35,43 @@ dest."usr/bin" = "bin/linux/arm64"
 kind = "deb"
 petal.chipset = "amd64"
 # petal.dependencies = "bash"
-# petal.priority = "optional"
 dest."usr/bin" = "bin/linux/amd64"
 
 [[pkg]]
 kind = "deb"
 petal.chipset = "arm64"
 # petal.dependencies = "bash"
-# petal.priority = "optional"
 dest."usr/bin" = "bin/linux/arm64"
+
+[[pkg]]
+kind = "deb"
+petal.chipset = "loong64"
+# petal.dependencies = "bash"
+dest."usr/bin" = "bin/linux/loong64"
+
+[[pkg]]
+kind = "deb"
+petal.chipset = "ppc64"
+# petal.dependencies = "bash"
+dest."usr/bin" = "bin/linux/ppc64"
+
+[[pkg]]
+kind = "deb"
+petal.chipset = "ppc64el"
+# petal.dependencies = "bash"
+dest."usr/bin" = "bin/linux/ppc64le"
+
+[[pkg]]
+kind = "deb"
+petal.chipset = "riscv64"
+# petal.dependencies = "bash"
+dest."usr/bin" = "bin/linux/riscv64"
 
 [[pkg]]
 kind = "freebsd"
 petal.origin = "local/raygun"
 petal.chipset = "freebsd:*:amd64"
 # petal.dependencies = "bash: { origin: \"shells/bash\" }"
-# petal.prefix = "/usr/local"
 # petal.license = "FreeBSD,GPL,MIT"
 dest."usr/local/bin" = "bin/freebsd/amd64"
 
@@ -59,7 +80,6 @@ kind = "freebsd"
 petal.origin = "local/raygun"
 petal.chipset = "freebsd:*:aarch64"
 # petal.dependencies = "bash: { origin: \"shells/bash\" }"
-# petal.prefix = "/usr/local"
 # petal.license = "FreeBSD,GPL,MIT"
 dest."usr/local/bin" = "bin/freebsd/arm64"
 
@@ -116,6 +136,24 @@ petal.chipset = "aarch64"
 dest."usr/bin" = "bin/linux/arm64"
 
 [[pkg]]
+kind = "rpm"
+petal.chipset = "loongarch64"
+# petal.dependencies = "bash@5,curl@8"
+dest."usr/bin" = "bin/linux/loong64"
+
+[[pkg]]
+kind = "rpm"
+petal.chipset = "ppc64le"
+# petal.dependencies = "bash@5,curl@8"
+dest."usr/bin" = "bin/linux/ppc64le"
+
+[[pkg]]
+kind = "rpm"
+petal.chipset = "riscv64"
+# petal.dependencies = "bash@5,curl@8"
+dest."usr/bin" = "bin/linux/riscv64"
+
+[[pkg]]
 kind = "tarball"
 petal.chipset = "amd64"
 dest."opt/raygun/bin" = "bin/linux/amd64"
@@ -124,3 +162,23 @@ dest."opt/raygun/bin" = "bin/linux/amd64"
 kind = "tarball"
 petal.chipset = "arm64"
 dest."opt/raygun/bin" = "bin/linux/arm64"
+
+[[pkg]]
+kind = "tarball"
+petal.chipset = "loongarch64"
+dest."opt/raygun/bin" = "bin/linux/loong64"
+
+[[pkg]]
+kind = "tarball"
+petal.chipset = "ppc64"
+dest."opt/raygun/bin" = "bin/linux/ppc64"
+
+[[pkg]]
+kind = "tarball"
+petal.chipset = "ppc64le"
+dest."opt/raygun/bin" = "bin/linux/ppc64le"
+
+[[pkg]]
+kind = "tarball"
+petal.chipset = "riscv64"
+dest."opt/raygun/bin" = "bin/linux/riscv64"

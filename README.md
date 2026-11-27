@@ -26,7 +26,11 @@ Scatter packages like so many leaves on the wind.
 │   └── raygun-0.0.1-1-x86_64.AppImage
 ├── deb
 │   ├── raygun_0.0.1-1_amd64.deb
-│   └── raygun_0.0.1-1_arm64.deb
+│   ├── raygun_0.0.1-1_arm64.deb
+│   ├── raygun_0.0.1-1_loong64.deb
+│   ├── raygun_0.0.1-1_ppc64.deb
+│   ├── raygun_0.0.1-1_ppc64el.deb
+│   └── raygun_0.0.1-1_riscv64.deb
 ...
 ```
 

@@ -273,27 +273,42 @@ petal.chipset = "amd64"
 
 ##### Common OS Architectures
 
-| Petal          | ISA                   | Chipset                            |
-| -------------- | --------------------- | ---------------------------------- |
-| AppImage       | 64-bit ARM            | `aarch64`                          |
-| AppImage       | 64-bit Intel          | `x86_64`                           |
-| Deb            | 64-bit ARM            | `arm64`                            |
-| Deb            | 64-bit Intel          | `amd64`                            |
-| Deb            | (chipset independent) | `all`                              |
-| FreeBSD        | 64-bit ARM            | `freebsd:<os-version>:aarch64`     |
-| FreeBSD        | 64-bit Intel          | `freebsd:<os-version>:amd64`       |
-| FreeBSD        | (chipset independent) | `freebsd:<os-version>:*`           |
-| macOS          | 64-bit ARM            | `arm64`                            |
-| macOS          | 64-bit Intel          | `x86_64`                           |
-| macOS          | (chipset independent) | `universal`                        |
-| Rpm            | 64-bit ARM            | `aarch64`                          |
-| Rpm            | 64-bit Intel          | `x86_64`                           |
-| Rpm            | (chipset indepdendet) | `noarch`                           |
-| Tarball (UNIX) | 64-bit ARM            | `aarch64`, `arm64`, etc.           |
-| Tarball (UNIX) | 64-bit Intel          | `x86_64`, `amd64`, etc.            |
-| Tarball (UNIX) | (chipset independent) | `all`, `noarch`, `universal`, etc. |
-| Windows (MSI)  | 64-bit ARM            | `Arm64`                            |
-| Windows (MSI)  | 64-bit Intel          | `x64`                              |
+| Petal          | ISA                   | Chipset                             |
+| -------------- | --------------------- | ----------------------------------- |
+| AppImage       | 64-bit ARM            | `aarch64`                           |
+| AppImage       | 64-bit Intel          | `x86_64`                            |
+| Deb            | 64-bit ARM            | `arm64`                             |
+| Deb            | 64-bit Intel          | `amd64`                             |
+| Deb            | 64-bit Loongson       | `loong64`                           |
+| Deb            | 64-bit PowerPC (BE)   | `ppc64`                             |
+| Deb            | 64-bit PowerPC LE     | `ppc64el`                           |
+| Deb            | 64-bit RISC_V         | `riscv64`                           |
+| Deb            | (chipset independent) | `all`                               |
+| FreeBSD        | 64-bit ARM            | `freebsd:<os-version>:aarch64`      |
+| FreeBSD        | 64-bit Intel          | `freebsd:<os-version>:amd64`        |
+| FreeBSD        | 64-bit Loongson       | `freebsd:<os-version>:loongarch:64` |
+| FreeBSD        | 64-bit PowerPC (BE)   | `freebsd:<os-version>:powerpc64`    |
+| FreeBSD        | 64-bit PowerPC LE     | `freebsd:<os-version>:ppc64le`      |
+| FreeBSD        | 64-bit RISC-V         | `freebsd:<os-version>:riscv64`      |
+| FreeBSD        | (chipset independent) | `freebsd:<os-version>:*`            |
+| macOS          | 64-bit ARM            | `arm64`                             |
+| macOS          | 64-bit Intel          | `x86_64`                            |
+| macOS          | (chipset independent) | `universal`                         |
+| Rpm            | 64-bit ARM            | `aarch64`                           |
+| Rpm            | 64-bit Intel          | `x86_64`                            |
+| Rpm            | 64-bit Loongson       | `loongarch64`                       |
+| Rpm            | 64-bit PowerPC LE     | `ppc64le`                           |
+| Rpm            | 64-bit RISC-V         | `riscv64`                           |
+| Rpm            | (chipset indepdendet) | `noarch`                            |
+| Tarball (UNIX) | 64-bit ARM            | `aarch64`, `arm64`, etc.            |
+| Tarball (UNIX) | 64-bit Intel          | `x86_64`, `amd64`, etc.             |
+| Tarball (UNIX) | 64-bit Loongson       | `loongarch64`                       |
+| Tarball (UNIX) | 64-bit PowerPC (BE)   | `ppc64`                             |
+| Tarball (UNIX) | 64-bit PowerPC LE     | `ppc64le`                           |
+| Tarball (UNIX) | 64-bit RISC-V         | `riscv64`                           |
+| Tarball (UNIX) | (chipset independent) | `noarch`, etc.                      |
+| Windows (MSI)  | 64-bit ARM            | `Arm64`                             |
+| Windows (MSI)  | 64-bit Intel          | `x64`                               |
 
 Note: Some platforms / package managers / package manager versions may lack support for noarch-style semantics.
 
