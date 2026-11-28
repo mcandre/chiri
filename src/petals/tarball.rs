@@ -40,9 +40,11 @@ impl Petal {
         }
 
         basename.push_str(".tgz");
+
+        let filename = petal.get("filename").unwrap_or(&basename);
         let tarball_artifacts_root = chiri.artifacts.clone().unwrap().join(base_dir);
         fs::create_dir_all(&tarball_artifacts_root).with_path(&tarball_artifacts_root)?;
-        let artifact_filename = tarball_artifacts_root.join(basename);
+        let artifact_filename = tarball_artifacts_root.join(filename);
         let mut archive = xarxarxar::WriteArchive::new()
             .format(xarxarxar::ArchiveFormat::TarPax)
             .compression(xarxarxar::CompressionFormat::Gzip)

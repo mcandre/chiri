@@ -134,7 +134,8 @@ impl Petal {
         basename.push_str(chipset);
         basename.push_str(".msi");
 
-        let artifact_filename = msi_artifacts_root.join(basename);
+        let filename = petal.get("filename").unwrap_or(&basename);
+        let artifact_filename = msi_artifacts_root.join(filename);
         let f = fs::OpenOptions::new()
             .read(true)
             .write(true)

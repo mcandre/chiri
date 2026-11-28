@@ -323,6 +323,13 @@ impl Petal {
 
         basename.push_str(".pkg");
 
+        let filename = petal.get("filename").unwrap_or(&basename);
+        let artifact_filename = pkg_artifacts_root.join(filename);
+        let pkg_builder = xarxarxar::WriteArchive::new()
+            .format(xarxarxar::ArchiveFormat::Xar)
+            .compression(xarxarxar::CompressionFormat::None)
+            .format_option(xarxarxar::FormatOption::XarCompressionNone);
+        let mut pkg_archive = pkg_builder.open_file(artifact_filename)?;
         let spec_attributes = Attributes {
             uid: Some(0u32),
             gid: Some(0u32),
@@ -332,13 +339,6 @@ impl Petal {
             mtime: Some(now),
             nlink: None,
         };
-
-        let artifact_filename = pkg_artifacts_root.join(basename);
-        let pkg_builder = xarxarxar::WriteArchive::new()
-            .format(xarxarxar::ArchiveFormat::Xar)
-            .compression(xarxarxar::CompressionFormat::None)
-            .format_option(xarxarxar::FormatOption::XarCompressionNone);
-        let mut pkg_archive = pkg_builder.open_file(artifact_filename)?;
         add_dir_header(&mut pkg_archive, "base.pkg", &spec_attributes)?;
         add_file_with_root(
             &mut pkg_archive,

@@ -139,7 +139,8 @@ impl Petal {
 
         basename.push_str(".pkg");
 
-        let artifact_filename = freebsd_artifacts_root.join(basename);
+        let filename = petal.get("filename").unwrap_or(&basename);
+        let artifact_filename = freebsd_artifacts_root.join(filename);
         let mut pkg_archive = xarxarxar::WriteArchive::new()
             .format(xarxarxar::ArchiveFormat::TarPax)
             .compression(xarxarxar::CompressionFormat::Zstd)

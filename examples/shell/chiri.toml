@@ -84,11 +84,19 @@ dest."bin" = "bin-win"
 
 [[pkg]]
 kind = "rpm"
-# petal.dist = "fc40"
+petal.dist = "fc40"
 # petal.chipset = "x86_64"
 petal.chipset = "noarch"
 # petal.dependencies = "bash@5,curl@8"
 dest."usr/bin" = "bin"
+
+[[pkg]]
+kind = "rpm"
+petal.dist = "oc00"
+# petal.chipset = "i686"
+petal.chipset = "noarch"
+# petal.dependencies = "bash@5,curl@8"
+dest."usr/bin" = "bin-win"
 
 [[pkg]]
 kind = "tarball"
@@ -96,3 +104,12 @@ kind = "tarball"
 # petal.chipset = "amd64"
 # petal.chipset = "noarch"
 dest."opt/raygun/bin" = "bin"
+
+[[pkg]]
+kind = "zipball"
+# petal.base_dir = "dos-8086"
+# petal.base_dir = "dos-80686"
+petal.base_dir = "dos-all"
+# 8.3 short
+petal.filename = "raygun1.zip"
+dest."fdos/bin" = "bin-win"

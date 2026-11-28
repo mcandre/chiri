@@ -30,6 +30,10 @@ pub enum Petal {
 
     /// Msi builds Windows (MSI) packages.
     Msi,
+
+    /// Zipball builds generic ZIP archives.
+    /// Designed for DOS.
+    Zipball,
 }
 
 impl Petal {
@@ -48,6 +52,7 @@ impl Petal {
             Petal::Msi => self.emit_msi(pkg, chiri),
             Petal::Rpm => self.emit_rpm(pkg, chiri),
             Petal::Tarball => self.emit_tarball(pkg, chiri),
+            Petal::Zipball => self.emit_zipball(pkg, chiri),
         }
     }
 }

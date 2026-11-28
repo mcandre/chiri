@@ -201,9 +201,11 @@ impl Petal {
         }
 
         basename.push_str(".rpm");
+
+        let filename = petal.get("filename").unwrap_or(&basename);
         let rpm_artifacts_root = chiri.artifacts.clone().unwrap().join(base_dir);
         fs::create_dir_all(&rpm_artifacts_root).with_path(&rpm_artifacts_root)?;
-        let artifact_filename = rpm_artifacts_root.join(basename);
+        let artifact_filename = rpm_artifacts_root.join(filename);
         rpm_pkg.build()?.write_file(artifact_filename)?;
 
         Ok(())

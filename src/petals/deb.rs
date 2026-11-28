@@ -174,12 +174,10 @@ impl Petal {
 
         basename.push_str(".deb");
 
+        let filename = petal.get("filename").unwrap_or(&basename);
         let deb_artifacts_root = chiri.artifacts.clone().unwrap().join(base_dir);
-
         fs::create_dir_all(&deb_artifacts_root).with_path(&deb_artifacts_root)?;
-
-        let artifact_filename = deb_artifacts_root.join(basename);
-
+        let artifact_filename = deb_artifacts_root.join(filename);
         let mut deb_archive = xarxarxar::WriteArchive::new()
             .format(xarxarxar::ArchiveFormat::Ar)
             .open_file(artifact_filename)?;

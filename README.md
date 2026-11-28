@@ -61,8 +61,9 @@ For details on building from source, see [DEVELOPMENT](DEVELOPMENT.md).
 * FreeBSD
 * macOS
 * RPM
-* Tarball
+* TAR (UNIX)
 * Windows
+* ZIP (DOS)
 
 # TIPS
 

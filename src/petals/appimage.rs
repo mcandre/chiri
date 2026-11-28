@@ -176,9 +176,10 @@ impl Petal {
 
         basename.push_str(".AppImage");
 
+        let filename = petal.get("filename").unwrap_or(&basename);
         let appimage_artifacts_root = chiri.artifacts.clone().unwrap().join(base_dir);
         fs::create_dir_all(&appimage_artifacts_root).with_path(&appimage_artifacts_root)?;
-        let artifact_filename = appimage_artifacts_root.join(basename);
+        let artifact_filename = appimage_artifacts_root.join(filename);
 
         if artifact_filename.exists() {
             fs::remove_file(&artifact_filename).with_path(&artifact_filename)?;
